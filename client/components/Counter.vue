@@ -99,10 +99,12 @@
 			font-weight: 100
 			margin-top: 7px
 			font-size: 1rem
+			letter-spacing: 0.5px
 			text-transform: uppercase
 
 		.prefix, .postfix
-			font-size: 1.2rem
+			font-size: 1rem
+			letter-spacing: 0.5px
 			font-weight: 100
 
 		.dec, .inc

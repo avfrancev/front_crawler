@@ -1,8 +1,9 @@
 <template lang="pug">
 #item-form
   h1 {{loadingQueriesCount}}
+  p AUTH: {{$auth.check()}}
+  p {{$auth.user()}}
   .inner-content(v-if='item')
-    //pre {{iitem.active}}
     el-row
       el-col.tc(:md="6" :sm="24")
         .logo(:style="{ backgroundImage: 'url(' + item.logo + ')' }")
@@ -95,6 +96,10 @@
       	lineNumbers: true
       	dragDrop: false
 
+
+
+
+
     computed:
       owner:
         get: -> @item.owner.id
@@ -102,7 +107,7 @@
 
     methods:
       onSubmit: ->
-        console.log @item
+        # console.log @item
         item = @item
         @$apollo.mutate(
           mutation: gql ["""
@@ -144,7 +149,7 @@
           @$message
             type: 'success'
             message: "#{data.data.updateItem.full_name} successfuly updated"
-          console.log data
+          # console.log data
         ).catch (err) =>
           @$notify
             duration: 30000
@@ -197,7 +202,7 @@
           id: @$route.params.id
         loadingKey: 'loadingQueriesCount'
         update: (data) ->
-          console.log data
+          # console.log data
           Object.assign {}, data.item
 
       # $subscribe:
@@ -224,8 +229,8 @@
               }
             }
           """]
-          result: (x) ->
-            console.log x
+          # result: (x) ->
+          #   console.log x
 
 
   }

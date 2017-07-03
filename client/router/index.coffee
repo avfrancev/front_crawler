@@ -12,17 +12,17 @@ Vue.use Router
 export default new Router
 	mode: 'history'
 	routes: [
-		# {
-		# 	path: '/test'
-		# 	name: 'test'
-		# 	component: Test
-		# 	meta: requiresAuth: true
-		# }
+		{
+			path: '/login'
+			name: 'login'
+			component: require '@/views/Login'
+			# meta: auth: false
+		}
 		{
 			path: '/'
 			name: 'home'
 			component: Dashboard
-			meta: requiresAuth: true
+			meta: auth: ['admin']
 		}
 		# {
 		# 	path: '/login'

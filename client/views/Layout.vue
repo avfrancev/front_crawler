@@ -57,6 +57,8 @@
 		section#main
 			nav#topnav
 				//- user
+				p AUTH: {{$auth.check()}}
+				p  | READY: {{$auth.ready()}}
 
 			#router-view
 				router-view
@@ -72,6 +74,7 @@
 		#
 		data: ->
 			activeLink: @$route.path
+
 
 		apollo:
       items:

@@ -4,6 +4,17 @@
   </div>
 </template>
 
+
+<script lang="coffee">
+
+export default {
+
+
+}
+
+</script>
+
+
 <style>
 body {
   margin: 0;

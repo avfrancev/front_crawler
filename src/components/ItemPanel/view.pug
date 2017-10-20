@@ -1,0 +1,88 @@
+transition
+	.item(:id="'item-'+item.id")
+		.panel(:class='{"loading": item.loading}' :style="{opacity: item.active ? '1':'0.4'}")
+			.panel-content(:class='{"scale-down": menuOpened && !item.loading}')
+				//- svg( viewBox="0 0 100 1" preserveAspectRatio="none" height="1px" width="100%" style="margin: 10px 0 0 0; overflow:visible")
+				//- 	path(
+				//- 		:d="dddx"
+				//- 		stroke="black"
+				//- 		stroke-width="2"
+				//- 		fill="transparent"
+				//- 		vector-effect="non-scaling-stroke"					
+				//- 	)
+				//- 	text(
+				//- 		x="0"
+				//- 		y="0"
+				//- 		vector-effect="non-scaling"
+				//- 		) {{dx}}
+
+				section.top
+					//- input(type="range" v-model="dx")
+					//- input(type="range" v-model="dy")
+					//- br
+					//- button.button.is-primary(@click="flip" animated) FLIP
+					p asfasfasfsa
+					.image.is-96x96(
+						id="item-${1+1}"
+						animated
+						:style="{ backgroundImage: 'url(' + item.logo + ')' }"
+					)
+					.title.is-4.item-name.is-spaced.has-text-centered {{ item.full_name }}
+					
+					
+				section.has-text-centered.font-roboto(v-cloak)
+					//- p {{item.nextParseDate | moment("DD.MM.YYYY hh:MM:SS") }}
+					pre {{item.postsCount}}
+					pre {{item.concurrency}}
+					el-button(@click="++item.postsCount") INC
+					p(v-if="item.loading") 🚀 ⚠️ ⛔ Parsing {{item.data.progress}}% ...
+					p(v-else-if="time")
+						| {{spinner}} &nbsp;
+						| Next run in: &nbsp;
+						b {{time}}
+						
+					
+				section.counters
+					
+					Counter(
+						name="posts" 
+						v-model="item.postsCount")
+					Counter(
+						name="concurrency"
+						v-model="item.concurrency"
+						editable='concurrency')
+					Counter(
+						name="depth"
+						v-model="item.depth"
+						editable='depth')
+						
+				section.buttons
+					el-button-group
+						el-button(type="info" size="small" :loading="item.loading" @click="parse_item") {{item.loading ? 'LOADING...' : 'PARSE'}}
+						router-link.el-button.el-button--info.el-button--small(
+							:to="{ name: 'item_edit', params: {id: item.id} }"
+							) EDIT
+						el-button(type="info" size="small" @click="menuOpened = !menuOpened") ...
+						
+				div(
+					v-show="item.loading"
+					:style="{	position: 'absolute', bottom: '0', width: item.data.progress + '%', height: '1px', borderBottom: '1px solid red', transition: '0.3s' }"
+				)
+				
+			transition(name="menuSlide")
+				nav(v-if="menuOpened && !item.loading")
+					section.buttons
+						el-button-group
+							el-button(type="danger"  size="small" @click="deleteItem") DEL
+							el-button(type="danger"  size="small" @click="delete_posts") DEL POSTS
+							el-button(type="danger"  size="small" @click="copy") COPY
+							el-button(type="danger"  size="small" @click="menuOpened = false") X
+					//- 	p.control
+					//- 		a.button.is-danger(@click="deleteItem") DEL
+					//- 	p.control
+					//- 		a.button.is-danger(@click="delete_posts") DEL POSTS
+					//- 	p.control
+					//- 		a.button.is-danger(@click="copy") COPY
+					//- 	p.control(style="width: auto")
+					//- 		a.button.is-danger(@click="menuOpened = false") X
+				

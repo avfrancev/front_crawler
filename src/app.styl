@@ -1,0 +1,349 @@
+$Black = #282a36
+$Light_Black = #324057
+$Extra_Light_Black = #475669
+$Silver = #8492A6
+$Light_Silver = #99A9BF
+$Extra_Light_Silver = #C0CCDA
+$Gray = #D3DCE6
+$Light_Gray = #E5E9F2
+$Extra_Light_Gray = #EFF2F7
+$Dark_White = #F9FAFC
+
+$sm = 768px
+$md = 992px
+$lg = 1200px
+
+/******************************/
+
+@import 'vars.styl'
+
+.disable-hover
+	pointer-events: none
+
+
+@reset-global pc
+
+h1
+	font-size: 2rem
+	line-height: 2.5rem
+h2
+	font-size: 1.75rem
+	line-height: 2.25rem
+h3
+	font-size: 1.5rem
+	line-height: 2rem
+h4
+	font-size: 1.2rem
+	line-height: 1.4rem
+h5
+	font-size: 1rem
+h6
+	font-size: 0.8rem
+
+a.el-button
+	text-decoration: none
+
+hr
+	border: none
+	border-top: 1px solid #e4e8f1
+	border-bottom: 1px solid #fff
+
+[v-cloak]
+	/*display: none*/
+	background: red
+
+.tc
+	text-align: center
+
+.text-small
+	font-size: 0.8rem
+
+.text-uppercase
+	text-transform: uppercase
+
+.text-muted
+	color: $Light_Silver
+
+.mb1
+	margin-bottom: 5px
+
+p
+	margin: 7px 0
+
+a
+	color: $Extra_Light_Black
+	text-decoration: none
+	&:hover
+		color: $Silver
+		text-decoration: underline
+/*.code
+	height: 100%*/
+
+.fll
+	float: left
+
+.CodeMirror
+	border: 1px solid #eee
+	height: 300px !important
+	font-size: 13px !important
+
+.el-notification__title
+	font-weight: 500
+	font-size: 14px
+	line-height: 1.5rem
+
+.el-dropdown-link
+	border-bottom: 1px dashed $Light_Silver
+	cursor: pointer
+/******************************/
+/********** TRANSITIONS ***********/
+
+.list-item
+	display: block
+	/*max-height: 20px*/
+	/*flex: 1
+	height: auto*/
+.list-leave-active
+	position: absolute
+
+.list-enter-active, .list-leave-active
+	/*position: absolute*/
+	transition: all 0.4s ease-in-out
+
+.list-enter, .list-leave-to /* .list-leave-active for <2.1.8 */
+	/*flex: 0*/
+	opacity: 0
+	transform: scaleY(0.1)
+
+.list-move
+	transition: all 0.2s
+
+@keyframes blink
+	from
+		opacity: 0
+		background: red
+	to
+		opacity: 1
+		background: yellow
+
+/*********** TRANSITIONS *************/
+/******************************/
+
+body, html
+	font-family: BlinkMacSystemFont, -apple-system, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", 	"Helvetica", "Arial", sans-serif
+	/*font-family: 'Roboto Condensed', sans-serif*/
+	font-weight: 100
+	font-size: 14px
+	height: 100%
+	width: 100%
+	background: $Dark_White
+	color: $Extra_Light_Black
+
+#app
+	height: 100%
+	width: 100%
+	display: flex
+	position: relative
+	/*flex-direction: row*/
+
+nav#leftnav
+	flex: 0 0 250px
+	background: $Black
+	max-width: 250px
+	overflow: hidden
+	-webkit-transform: translate3d(0,0,0)
+	@media only screen and (max-width: $sm)
+		flex: 0 0 0%
+		transition: 0.3s
+		max-width: 0px
+		width: 0%
+		overflow: hidden
+		&.opened
+			position: absolute
+			height: 100%
+			width: 100%
+			max-width: 100%
+			z-index: 999
+			.close
+				display: inline-block
+
+	.close
+		display: none
+		float: right
+		margin: 10px 10px 10px 0
+		/*height: 2rem*/
+		/*font-size: 2rem*/
+		text-decoration: none
+		color: #000
+		padding: 10px
+		background: #fff
+		border-radius: 50%
+		width: 1.2rem
+		text-align: center
+		line-height: 1.2rem
+
+	.logo
+		justify-content: space-between
+		span
+			height: 56px
+			line-height: 56px
+			font-size: 1.3rem
+			letter-spacing: 4px
+			margin: 0 0 0 17px
+			/*text-align: center*/
+			color: $Dark_White
+
+		.menu-toggle
+			background: transparent
+			color: $Dark_White
+			font-size: 20px
+			line-height: 31px
+			margin: 12px 12px 12px 0
+			height: 30px
+			width: 30px
+			text-align: center
+			/*border-radius: 50%*/
+			/*border: 1px solid $Dark_White*/
+			cursor: pointer
+			transition: 0.2s
+			&:hover
+				svg path
+					stroke: #20a0ff
+				/*background: $Dark_White*/
+			svg path
+				transition: 0.2s
+				stroke-linecap: round
+				stroke-width: 2px
+				stroke: #fff
+
+	ul.el-menu--dark
+		background: $Black
+		border-radius: 0
+
+
+section#main
+	overflow: hidden
+	flex: 1
+	display: flex
+	flex-direction: column
+	height: 100%
+	overflow: hidden
+
+	nav#topnav
+		flex: 0 0 56px
+		display: flex
+		width: 100%
+		justify-content: space-between
+		background: $Dark_White
+		z-index: 100
+		border-bottom: 1px solid rgba(193, 200, 214, 0.32)
+		box-shadow: 0px 10px 10px 0 rgba(195, 206, 236, 0.15), 0 2px 4px 0 rgba(232,237,250,.5)
+
+		.openMenu
+			margin: auto 10px
+			display: none
+			@media (max-width: $sm)
+				display: block
+
+
+
+	#router-view
+		// flex: 1 1 auto
+		overflow-y: auto
+		width: 100%
+		& > div > .container
+			padding: 1rem 2rem
+			@media (max-width: $sm)
+				padding: 0 1rem
+				max-width: $sm
+
+
+.panel
+	position: relative
+	overflow: hidden
+	height: 100%
+	/*&.loading
+		box-shadow: 0 0 20px red*/
+	.panel-content
+		display: flex
+		height: 100%
+		flex-direction: column
+		position: relative
+		overflow: hidden
+		/*transition: 0.6s	*/
+		transition: 0.3s 0.1s
+		transform-origin: 50% 0
+		&.scale-down
+			transform: scale(0.8)
+
+.el-menu
+	.menu-item
+		display: flex
+		color: $Extra_Light_Silver
+		text-decoration: none
+		padding: 15px 15px
+		font-size: 14px
+		position: relative
+		transition: 0.3s
+		box-sizing: border-box
+		display: flex
+		align-items: center
+		/*white-space: nowrap*/
+		&:hover
+			background: #343746
+
+		&.is-active
+			color: #20a0ff
+
+	sup
+		top: 0
+		margin-right: 10px
+		background-color: #1e2029
+		border-radius: 6px
+		color: #fff
+		display: inline-block
+		font-size: 10px
+		height: 15px
+		line-height: 15px
+		padding: 1px 6px
+		text-align: center
+		border: 1px solid #414458
+
+	.el-collapse
+		border: none
+		.el-collapse-item__header
+			color: $Extra_Light_Silver
+			font-size: 14px
+			background: none
+			border: none
+		.el-collapse-item__content
+			padding: 0
+		.el-collapse-item__wrap
+			border: none
+			background: #23252f
+			.menu-item.space-between
+				justify-content: space-between
+			.menu-item
+				padding: 10px 10px
+				padding-left: 15px
+				line-height: 15px
+				font-size: 13px
+				&:first-child
+					margin-top: 20px
+				&:last-child
+					margin-bottom: 20px
+		.el-collapse-item__header__arrow
+			position: absolute
+			line-height: 46px
+			right: 15px
+
+
+.ico
+	height: 17px
+	min-width: 17px
+	margin-right: 10px
+	border-radius: 50%
+	background-size: 100%
+	background-repeat: no-repeat
+	background-position: 50% 50%
+	box-shadow: 0 0 0 1px #99A9BF

@@ -39,12 +39,25 @@ module.exports = {
 			},
 			{
 				test: /\.coffee$/,
-				loaders: ['babel-loader','coffee-loader'],
-				include: [resolve('src'), resolve('test')]
-				// exclude: [/node_modules/]
+				// loaders: ['coffee-loader'],
+				include: [resolve('src'), resolve('test')],
+				use: [
+					{
+						loader: 'coffee-loader',
+						options: {
+							transpile: {
+								presets: ['env']
+							}
+						}
+					}
+				]
 			},
 			{
-				test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,
+					test: /\.svg$/,
+					loader: 'svg-inline-loader'
+			},
+			{
+				test: /\.(png|jpe?g|gif)(\?.*)?$/,
 				loader: 'url-loader',
 				options: {
 					limit: 10000,

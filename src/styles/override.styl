@@ -1,0 +1,47 @@
+
+
+
+.el-button + .el-button
+	margin-left: 0
+
+.el-button
+	border: none
+	font-weight: bold
+	&:hover, &:active, &:focus
+		color: #fff
+
+.el-button--circle
+	// color: #fff
+	border-radius: 50%
+	// height: 40px
+	// width: 40px
+
+.el-button--round
+	// color: #fff
+	border-radius: 20px
+	// height: 40px
+	// width: 40px
+
+.btn-group
+	display: flex
+	& > button:first-child
+		border-radius: 4px 0 0 4px
+	& > button:last-child
+		border-radius: 0 4px 4px 0
+	&.rounded > button:first-child
+		border-radius: 20px 0 0 20px
+	&.rounded > button:last-child
+		border-radius: 0 20px 20px 0
+
+	button
+		border-radius: 0
+
+
+
+.el-dropdown
+	& > .icon
+		width: 21px
+		height: 21px
+
+.el-dropdown-menu
+	padding: 0

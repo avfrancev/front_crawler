@@ -1,5 +1,5 @@
 <template lang="pug">
-	div#app
+	#app
 		nav#leftnav(v-cloak :class="leftMenuOpened ? 'opened' : '' ")
 			.flex.logo
 				span(index="0") 🚀 PARSER

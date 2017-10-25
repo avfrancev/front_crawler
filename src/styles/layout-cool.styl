@@ -1,0 +1,237 @@
+@reset-global pc
+
+@import './../../node_modules/element-ui/lib/theme-default/index.css'
+@import './../styles/vars.styl'
+@import './../styles/grid.styl'
+@import './../styles/override.styl'
+
+
+
+body, html
+	// font-family: BlinkMacSystemFont, -apple-system, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", 	"Helvetica", "Arial", sans-serif
+	font-family: "PT Sans", -apple-system, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", 	"Helvetica", "Arial", sans-serif
+	/*font-family: 'Roboto Condensed', sans-serif*/
+	-webkit-font-smoothing: antialiased
+	-moz-osx-font-smoothing: grayscale
+	font-weight: 100
+	font-size: 14px
+	// font-size: 100%
+	// letter-spacing: 0.5px
+	height: 100%
+	width: 100%
+	box-sizing: border-box
+	// background: $Dark_White
+	color: $Extra_Light_Black
+
+*, *:before, *:after
+	box-sizing: inherit
+
+// p, span, i
+// 	line-height: 1
+// 	font-size: 14px
+
+h1
+	font-size: 2rem
+	line-height: 2.5rem
+h2
+	font-size: 1.75rem
+	line-height: 2.25rem
+h3
+	font-size: 1.5rem
+	line-height: 2rem
+h4
+	font-size: 1.2rem
+	line-height: 1.4rem
+h5
+	font-size: 1rem
+h6
+	font-size: 0.8rem
+
+
+/////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////
+
+#app
+	display: flex
+	height: 100vh
+	overflow: hidden
+
+
+nav#left
+	width: 100px
+	flex: 0 0 100px
+	// border-right: 1px solid #383d4b
+	box-shadow: inset -1px 0 1px #383d4b, 0px 0 5px hsla(224, 15%, 15%, 1)
+	z-index: 1
+	height: 100vh
+	background: $rock_light
+	background-image: url("~@/assets/dirt.png")
+	overflow-y: scroll
+	overflow-x: hidden
+
+
+	+sm()
+		width: 100%
+		flex: 0 0 100%
+		box-shadow: none
+		transition: 200ms
+		transform: translateX(-100%)
+		position: absolute
+
+		&.opened
+			transform: translateY(0)
+			// flex: 0 0 100%
+
+	.logo-row
+		display: flex
+		height: 90px
+		font-size: 2em
+		height: 90px
+		align-items: center
+		justify-content: space-between
+		.logo
+			text-shadow: 1px 0 0px #000
+			padding: 25px
+			margin: 0 auto
+			+sm()
+				margin: 0
+		span
+			color: #fff
+			display: none
+			+sm()
+				display: block
+		.close-btn
+			position: relative
+			display: none
+			// height: 40px
+			// width: 40px
+			padding: 25px
+			// font-weight: bold
+			+sm()
+				display: block
+
+	hr
+		margin: 0 10px
+		border: none
+		border-top: 1px solid #23262f
+		border-bottom: 1px solid #383d4c
+
+.left-menu
+	display: flex
+	flex-direction: row
+	flex-wrap: wrap
+	& > *
+		width: 100%
+		+sm()
+			width: calc(25% - 20px)
+			margin: 10px
+		+xs()
+			width: calc(50% - 20px)
+
+
+nav#left-secondary
+	// flex: 0 0 0
+	flex: 0.0001 1 0px
+	// width: 0
+	overflow: hidden
+	transition: flex .35s ease
+	// width: 0
+	height: 100vh
+	// transition: 400ms, transform 100ms
+	// background: $rock
+	position: relative
+	// will-change: auto
+
+	&.left-secondary-opened
+		flex: 0.0001 1 250px
+		#left-secondary-body
+			transform: translate3d(0px, 0, 0)
+
+	#left-secondary-body
+	// 	overflow: hidden
+	// 	transition: 0.3s
+		position: absolute
+		background: $rock
+		height: 100vh
+		width: 250px
+		transform: translate3d(-250px, 0, 0)
+		transition: transform .35s
+
+
+	+md()
+		overflow: visible
+		#left-secondary-body
+			transform: translate3d(-250px, 0, 0)
+		&.left-secondary-opened
+			flex: 0.0001 1 0px
+			#left-secondary-body
+				transform: translate3d(0px, 0, 0)
+
+
+section#main
+	overflow: hidden
+	flex: 1
+	display: flex
+	flex-direction: column
+	height: 100%
+
+	+md()
+		transition: .35s
+		transform: translate3d(0px, 0, 0)
+		&.left-secondary-opened
+			transform: translate3d(250px, 0, 0)
+
+#top
+	flex: 0 0 90px
+	display: flex
+	align-items: center
+	background: #fff
+	z-index: 1
+	box-shadow: inset 0px -1px 1px hsla(0, 0%, 88%, 1), 0px -5px 21px hsla(213, 32%, 77%, 1);
+	padding-left: 2em
+
+
+#router-view
+	// flex: 1 1 auto
+	overflow-y: auto
+	width: 100%
+	// & > div > .container
+	// 	padding: 1rem 2rem
+	// 	@media (max-width: $sm)
+	// 		padding: 0 1rem
+	// 		max-width: $sm
+
+.router-item
+	transition: all 300ms 400ms
+	// *
+	// 	font-size: 14px
+
+.router-enter, .router-leave-to
+	opacity: 0.0001
+	transform: translateX(-30px)
+	// position: absolute
+
+.router-leave-to
+	transition: 300ms
+
+.list-item
+	transition: all 400ms
+	display: block
+	opacity: 1
+	width 100%
+	heigh: 40px
+	padding: 10px
+	background: #eee
+	margin-bottom: 1px
+	// width 100%
+	// margin-right: 10px;
+
+.list-enter, .list-leave-to
+	opacity: 0.1
+	transform: scaleY(0.2)
+	// transform: translateX(30px)
+
+.list-leave-active
+	position: absolute

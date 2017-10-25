@@ -24,6 +24,6 @@
 </script>
 
 <style lang="stylus">
-@import "./../vars.styl"
+@import './../styles/vars.styl'
 
 </style>

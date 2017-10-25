@@ -138,50 +138,5 @@
 
 <style scoped media="screen" lang="postcss">
 
-@import '../vars.sss'
-
-.list-item
-	margin: 20px 0
-	border: 1px solid $Extra_Light_Gray
-	border-radius: 4px
-	background: #fff
-	width: 100%
-	overflow: hidden
-	&:hover
-		box-shadow: 0 0 8px 0 rgba(232,237,250,.6), 0 2px 4px 0 rgba(232,237,250,.5)
-
-	& > *
-		padding: 15px
-
-.state-bar
-	background: $Extra_Light_Gray
-	padding: 10px 15px
-
-.status
-	margin: 0
-	background: #13CE66
-	position: absolute
-	height: 100%
-	width: 3px
-
-.slash
-	margin: 0 10px
-
-.dot
-	height: 10px
-	width: 10px
-	display: inline-block
-	border-radius: 50%
-
-.image
-	height: 35px
-	width: 35px
-	margin-right: 10px
-	border-radius: 50%
-	filter: grey(1)
-	border: 1px solid $Extra_Light_Silver
-	background-position: 50%
-	background-size: cover
-	background-repeat: no-repeat
 
 </style>

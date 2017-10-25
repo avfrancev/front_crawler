@@ -1,93 +1,75 @@
 <template lang="pug">
-transition
-	.item(:id="'item-'+item.id" v-on:mouseleave="debounceCloseMenu" )
-		.panel(:class='{"loading": item.loading}' :style="{opacity: item.active ? '1':'0.4'}")
-			.panel-content(:class='{"scale-down": menuOpened && !item.loading}')
-				section.top
-					.image.is-96x96(
-						animated
-						:style="{ backgroundImage: 'url(' + item.logo + ')' }"
-					)
-					h4 {{ item.full_name }}
-					p
-						span.text-small.text-muted by
-						=" "
-						span.text-muted {{item.owner.displayName || item.owner.username}}
-
-
-				section.has-text-centered.font-roboto
-					//- p(v-if="!item.nextParseDate || (!item.active && item.loading)") Not active
-					//- p(v-if="item.active && !item.loading && item.nextParseDate") Next parse in: {{ duration }}
-					//- p(v-else-if="item.loading") 🚀 Parsing {{item.data.progress}}%
-					//- p(v-else-if="item.status == 'queued'") pending...
-					//- br
-					el-progress(
-						type="circle"
-						:percentage="item.data.progress"
-						:status="progressStatus"
-						:width="70"
-					)
-
-
-				section.counters
-					Counter(
-						name="posts"
-						v-model="item.postsCount")
-					Counter(
-						name="depth"
-						v-model="item.depth"
-						@update="updateCounter"
-						:editable="canEdit ? 'depth': false")
-					Counter(
-						name="interval"
-						v-model="item.parseInterval"
-						@update="updateCounter"
-						:editable="canEdit ? 'parseInterval': false")
-
-				section.buttons(v-if="canEdit")
-					el-button-group
-						//- :loading="item.loading || item.status != ''"
-						el-button(
-							type="info"
-							/*size="small"*/
-							:loading="item.loading"
-							@click="parse_item") {{item.loading ? 'LOADING...' : item.status ? item.status : 'PARSE'}}
-						router-link.el-button.el-button--info.el-button--small(
-							:to="{ name: 'item_edit', params: {id: item.id} }"
-							tag="button"
-							) EDIT
-						el-button(type="info" size="small" @click="menuOpened = !menuOpened") &#9776;
-
-				//- section.buttons(v-if="!canEdit")
-				//- 	hr
-					//- p
-					//- 	| Owner:
-					//- 	= ' '
-					//- 	b: i {{item.owner.displayName || item.owner.username}}
-
-				div(
-					v-show="item.loading"
-					:style="{	position: 'absolute', bottom: '0', width: item.data.progress + '%', height: '1px', borderBottom: '1px solid red', transition: '0.3s' }"
+	//- .ttt(style="padding: 50px; background: grey") {{item.full_name}}
+	.item(:id="'item-'+item.id")
+		section.head
+			el-dropdown.item-dropdown(trigger="click" @command="handleItemCommand")
+				span.el-dropdown
+					.icon(v-html="menuIcon")
+				el-dropdown-menu(slot="dropdown")
+					el-dropdown-item(command="removePosts") Remove posts
+					el-dropdown-item Publish all posts
+					el-dropdown-item Unpublish all posts
+			.head__body
+				h4: b {{item.full_name}}
+				br
+				span by
+				="   "
+				span {{item.owner.displayName || item.owner.username}}
+				p: b Status: {{item.status}}
+				h4 {{progress}}
+			LogoProgress(
+				:id="item.id"
+				:bgImg="item.logo"
+				:percentage="progress"
+				:width="80"
+				:status="item.status"
 				)
-				//- pre {{canEdit}}
-				//- pre {{item.owner}}
 
-			transition(name="menuSlide")
-				nav(v-if="menuOpened && !item.loading" @click="menuOpened = false")
-					section.buttons
-						el-button-group
-							el-button(type="danger"  size="small") DEL
-							el-button(type="danger"  size="small" @click="removePosts") DEL POSTS
-							el-button(type="danger"  size="small") COPY
-							//- el-button(type="danger"  size="small" @click="menuOpened = false") X
-					//- 	p.control
-					//- 		a.button.is-danger(@click="deleteItem") DEL
-					//- 	p.control
-					//- 		a.button.is-danger(@click="delete_posts") DEL POSTS
-					//- 	p.control
-					//- 		a.button.is-danger(@click="copy") COPY
-					//- 	p.control(style="width: auto")
-					//- 		a.button.is-danger(@click="menuOpened = false") X
+		section.body
+			h3 {{duration}} at {{nextParseDate}}
+		section.counters
+			Counter(
+				name="posts"
+				v-model="item.postsCount")
+			Counter(
+				name="depth"
+				v-model="item.depth"
+				@update="updateCounter"
+				:editable="canEdit ? 'depth': false")
+			Counter(
+				name="interval"
+				v-model="item.parseInterval"
+				@update="updateCounter"
+				:editable="canEdit ? 'parseInterval': false")
+
+		section.buttons(v-if="canEdit")
+			.btn-group.rounded
+				BButton.bg-c-blue.c-white(
+					type="round"
+					icon="el-icon-delete!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+					/*size='small'*/
+					:loading="item.loading || item.status == 'queued'"
+					@click="parse_item"
+					) {{item.loading ? 'LOADING...' : item.status != 'success' ? item.status : 'PARSE'}}
+				BButton.bg-c-blue.c-white(
+					type="round"
+					/*size='small'*/
+					:loading="false"
+					@click="$router.push({ name: 'item_edit', params: {id: item.id}})"
+					) edit
+				//- BButton.bg-c-blue.c-white(type="round" size='small' :loading="false" @click="leftSecondaryOpened = !leftSecondaryOpened") left
+			//- el-button-group
+			//- 	//- :loading="item.loading || item.status != ''"
+			//- 	el-button(
+			//- 		type="info"
+			//- 		/*size="small"*/
+			//- 		:loading="item.loading"
+			//- 		@click="parse_item") {{item.loading ? 'LOADING...' : item.status != 'success' ? item.status : 'PARSE'}}
+			//- 	router-link.el-button.el-button--info.el-button--small(
+			//- 		:to="{ name: 'item_edit', params: {id: item.id} }"
+			//- 		tag="button"
+			//- 		) EDIT
+			//- 	el-button(type="info" size="small" @click="menuOpened = !menuOpened") &#9776;
 </template>
 
 <script lang="coffee">
@@ -96,18 +78,23 @@ transition
 	import throttle from 'lodash/throttle.js'
 	import {items, itemsSubscription, updateItem, removePost, removePosts} from '@/schemas.coffee'
 	import Counter from '@/components/Counter'
+	import LogoProgress from '@/components/LogoProgress'
 	import gql from 'graphql-tag'
 	import anime from 'animejs'
+
 
 	export default {
 
 		components:
 			Counter: Counter
+			LogoProgress: LogoProgress
+			BButton: require '@/components/Button'
 
 		props: ['item']
 		data: ->
 			menuOpened: false
 			duration: ''
+			menuIcon: require("@/assets/icons/menu.svg")
 
 		created: ->
 			@duration = @getNextParseDate()
@@ -117,9 +104,19 @@ transition
 			, interval
 
 		computed:
+			nextParseDate: ->
+				if @item.nextParseDate
+					@$moment.utc
+					@$moment(new Date(+@item.nextParseDate)).format('HH:mm:ss')
+				else 'no date'
+
+			progress: ->
+				@item.data.progress || 0
+
 			progressStatus: ->
-				if @item.status is 'error' then return 'exception'
-				else if @item.data.progress is 100 then return 'success'
+				'asfasf'
+				# if @item.status is 'error' then return 'exception'
+				# else if @progress is 100 then return 'success'
 
 			canEdit: ->
 				@$auth.user().id is @item.owner.id || @$auth.check('admin')
@@ -133,22 +130,18 @@ transition
 			log: (x) -> console.log(x)
 
 			getNextParseDate: ->
-				# console.log @item.nextParseDate
+				unless @item.nextParseDate then return 'not active'
 				next = @$moment(new Date(+@item.nextParseDate))
 				diff = @$moment.duration(next.diff @$moment()).asMilliseconds()
 				@$moment.utc(diff).format('HH:mm:ss')
 
-			debounceCloseMenu: debounce ->
-				@menuOpened = false
-			, 500
+			# debounceCloseMenu: debounce ->
+			# 	@menuOpened = false
+			# , 500
 			updateCounter: debounce (id, field) ->
 				@updateItem(id, field)
 			, 1000
 
-			# removePost: (id) ->
-			# 	@$apollo.mutate
-			# 		mutation: removePost
-			# 		variables: {id: id}
 
 			updateItem: (field) ->
 				@$apollo.mutate(
@@ -170,7 +163,15 @@ transition
 					params: id: @item.id
 					).then (console.log)
 
+			handleItemCommand: (command) ->
+				switch command
+					when 'removePosts'
+						do @removePosts
+					else
+						return
+
 			removePosts: ->
+				# console.log @item.id
 				@$apollo.mutate
 					mutation: removePosts
 					variables: { id: @item.id }
@@ -180,52 +181,64 @@ transition
 
 <style scoped lang="stylus">
 
-	@import "./../vars.styl"
-
-	.el-button
-		text-transform: uppercase
+	@import './../styles/vars.styl'
 
 	.item
 		border: 1px solid $Extra_Light_Gray
 		border-radius: 4px
-		transition: .2s
 		background: #fff
-		transition: 0.2s
-		&:hover
-			box-shadow: 0 0 8px 0 rgba(232,237,250,.6), 0 2px 4px 0 rgba(232,237,250,.5)
+		position: relative
+		// transition: 0.3s
+		height: 100%
+		display: flex
+		flex-direction: column
+		//&:hover
+		//	box-shadow: 0 0 8px 0 rgba(232,237,250,.6), 0 2px 4px 0 rgba(232,237,250,.5)
+
+		hr
+			border: none
+			border-top: 1px solid #e6e9f4
+			border-bottom: 1px solid #fff
 
 	section
-		padding: 10px 20px
-		text-align: center
-		font-weight: 100
-
-	.panel-content section:nth-last-child(2)
-		padding-bottom: 20px
+		padding: 0 20px 20px 20px
 
 
-	section.top
+	section.head
+		position: relative
+		background: #f4f5fa
+		padding-bottom: 65px
+		padding-top: 20px
 		flex: 1
-		padding: 20px
+
+		.head__body
+			text-align: center
+			margin: 0 20px
+
 		.image
-			margin: 0 auto
-			margin-bottom: 20px
+			position: absolute
+			left: 50%
+			bottom: -30px
+			background: #f4f5fa
+			margin-left: -25px
 			border-radius: 50%
 			background-size: 100%
 			background-repeat: no-repeat
 			background-position: 50% 50%
-			box-shadow: 0 0 0 5px $Light_Gray
-			height: 100px
-			width: 100px
-			/*&:before
-				position: absolute
-				content: ''
-				width: 100%
-				height: 100%
-				border-radius: 50%
-				border: 12px dashed transparent*/
+			box-shadow: 0 0 0 5px #fff
+			height: 60px
+			width: 60px
 
-		.item-name
-			margin: 10px 0
+	section.body
+		margin-top: 65px
+
+
+
+
+
+	.el-button
+		text-transform: uppercase
+
 
 	.counters
 		display: flex
@@ -234,40 +247,20 @@ transition
 			flex: 1
 
 	section.buttons
-		padding: 0 20px 20px
-		.el-button-group
+		/*padding: 0 20px 20px*/
+		.btn-group
 			display: flex
 			button, a
+				flex: 0 0 1
 				width: 100%
 
-	.field:not(:last-child)
-		margin-bottom: 0
-
-
-
-	nav
+	.item-dropdown
 		position: absolute
-		bottom: 0
-		left: 0
+		cursor: pointer
+		// padding: 15px 15px 3px 15px
+		padding: 0 15px
 		right: 0
-		border-top: 1px solid $Extra_Light_Gray
-		background: #fff
+		// z-index: 1
+		fill: #475669
 
-		transition: 1s
-		section.buttons
-			padding: 20px
-
-	.menuSlide-leave-active
-		transition: .3s
-
-	.menuSlide-enter-active
-		transition: .3s
-
-	.menuSlide-enter
-		transform: translateY(100px)
-		opacity: 0
-
-	.menuSlide-leave-to
-		opacity: 0
-		transform: translateY(100px)
 </style>

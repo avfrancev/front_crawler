@@ -1,107 +1,145 @@
+
 <template lang="pug">
-	div
-		h1 Posts
-		transition-group(name="list-complete")
-			.post-link(
-				v-for="(post, i) in posts"
-				:key="post.id"
-				class='list-complete-item'
+	.posts
+		transition-group(
+			name="list"
+			tag='div'
+			mode="out-in"
+			v-if='posts'
+			style="position: relative; min-height: 500px"
 			)
-				//- b(@click.prevent="log(post)") {{post.item.full_name}}
-				//- br
-				//- br
-				el-button(@click='delPost(post.id)') DEL123
-				router-link(
-					:to="{name: 'post', params: {id: post.id} }"
-					) {{post.title}}
-				//- div {{post.item.name}}
-				hr
+			div(
+				v-for="(post, i) of posts"
+				:key="post.id"
+				class="post list-item"
+			)
+				div.grid(style="overflow: hidden;")
+					.col-lg-10.col-md-9.main
+						h3 {{post.title}}
+					.actions.col-lg-2.col-md-3.col-bleed
+						el-button-group.as-column
+							el-button() Publish
+							el-button( icon="delete" @click="removePostByID(post)") Delete
 </template>
 
 <script lang="coffee">
-	import gql from 'graphql-tag'
 
-	postsQuery = gql ["""
-		{
-			posts(limit: 122) {
-				id
-				title
-				itemId
-				item {
-					id
-					name
-					full_name
-				}
-			}
-		}
-	"""]
+	import debounce from 'lodash/debounce.js'
+	import {posts, removePost, postRemove, postAdd, updatePost} from '@/schemas.coffee'
+	import gql from 'graphql-tag'
 
 	export default {
 		data: ->
-			posts: []
-			item: {}
+			statusColors:
+				pending: 'lightblue'
+				published: 'lightgreen'
+				disabled: 'lightgrey'
+
+
 		methods:
 			log: (x) -> console.log(x)
+			updateCounter: debounce (id, field) ->
+				@updateItem(id, field)
+			, 1000
 
-			delPost: (id) ->
-				console.log id
-				@$apollo.mutate(
-					mutation: gql ["""
-						mutation (
-							$id: String!
-							) {
-							removePost(
-								id: $id
-							) {
-								id
-							}
-						}
-					"""]
-					variables: { id: id }
-					refetchQueries: [{ query: postsQuery }]
-				).then((data) =>
-					console.log data
-					@$message
-						type: 'success'
-						message: "#{data.data.removePost}"
-				).catch (err) =>
-					@$notify
-						duration: 30000
-						type: 'error'
-						message: err.graphQLErrors[0]?.message || err
-
-
+			removePostByID: (post) ->
+				# console.log post
+				@$apollo.mutate
+					mutation: removePost
+					variables: {id: post.id, itemId: post.item.id}
+			#
+			# updateItem: (id, field) ->
+			# 	@$apollo.mutate(
+			# 		mutation: updateItem
+			# 		variables: Object.assign {id}, field
+			# 	).then((data) =>
+			# 		@$message
+			# 			type: 'success'
+			# 			message: "#{data.data.updateItem.full_name} successfuly updated"
+			# 		# console.log data
+			# 	).catch (err) =>
+			# 		@$notify
+			# 			duration: 30000
+			# 			type: 'error'
+			# 			message: err.graphQLErrors[0]?.message || err
+			#
+			# parse_item: (id) ->
+			# 	@axios.get('/parse'
+			# 		params: id: id
+			# 		).then (console.log)
+			#
+			# removePosts: (id) ->
+			# 	@$apollo.mutate
+			# 		mutation: removePosts
+			# 		variables: { id: id }
 
 		apollo:
 			posts:
-				query: postsQuery
+				query: posts
 				variables:
-					limit: 0
+					limit: 5
+		mounted: ->
 
-			$subscribe:
-				postChange:
-					query: gql ["""
-						subscription ppp {
-							PostChange {
-								id
-								title
-								itemId
-								item {
-									id
-									name
-									full_name
-								}
-							}
-						}
-					"""]
-					result: (console.log )
+			@$apollo.queries.posts.subscribeToMore
+				document: postRemove
+				updateQuery: (previousResult, { subscriptionData }) =>
+					id = subscriptionData.data.PostRemove.id
+					@_apollo.queries.posts.refetch()
+					return previousResult
+
+
+
+			@$apollo.queries.posts.subscribeToMore
+				document: postAdd
+				updateQuery: (previousResult, { subscriptionData }) =>
+					@_apollo.queries.posts.refetch()
+					return previousResult
+
+
 	}
 </script>
 
-<style media="screen">
-	/*.post-link {
-		display: block
-	}*/
+<style scoped media="screen" lang="stylus">
+
+@import './../styles/vars.styl'
+
+.posts
+	margin-top: 20px
+
+.post
+	width: 100%
+	background: #f4f5fa
+	background: #fff
+	&:not(:last-child)
+		margin-bottom: 10px
+
+	.main
+		box-shadow: 0px 0 25px #e3e5f2
+		border-right: 1px solid #e3e5f2
+
+.as-column
+	display: flex
+	flex-direction: column
+	height: 100%
+	background: #f4f5fa
+
+	.el-button
+		height: 100%
+		width: 100%
+		border-bottom-color: transparent
+		border: none
+		background: transparent
+		// &:hover
+		// 	border-bottom-color: #20a0ff !important
+		// 	background: #e3e5f2
+		// 	& + .el-button
+		// 		border-top-color: transparent
+
+	// .el-button:first-child
+	// 	border-radius: 3px 3px 0 0
+	// .el-button:last-child
+	// 	border-radius: 0 0 3px 3px
+	// 	border-bottom-color: #c4c4c4
 
 
 </style>

@@ -1,27 +1,25 @@
-# // The Vue build version to load with the `import` command
-# // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
-# import Vue from 'vue'
-# import App from './App'
-# import router from './router/index.coffee'
-#
-# Vue.config.productionTip = false
-#
-# new Vue(
-# 	el: '#app'
-# 	router: router
-# 	template: '<App/>'
-# 	components: App: App)
-
-
 import Vue from 'vue'
+import VueViewports from 'vue-viewports'
+
+Vue.use VueViewports,
+	0: 'xs'
+	576: 'sm'
+	768: 'md'
+	992: 'lg'
+	1200: 'xlg'
+	1600: 'qhd-desktop'
+	3840: 'uhd-desktop'
+
+
 import { sync } from 'vuex-router-sync'
-import Layout from '@/views/Layout.vue'
+# import Layout from '@/views/Layout.vue'
+import Layout from '@/views/LayoutCool.vue'
 import router from '@/router/index.coffee'
 import store from './store'
 
 import Element from 'element-ui'
 
-import 'element-ui/lib/theme-default/index.css'
+# import 'element-ui/lib/theme-default/index.css'
 Vue.use Element
 
 
@@ -33,8 +31,8 @@ import 'codemirror/addon/comment/comment.js'
 Vue.use VueCodeMirror
 
 config =
-	# crawler_host: 'avfrancev.ddns.net'
-	crawler_host: '192.168.1.5'
+	crawler_host: 'avfrancev.ddns.net'
+	# crawler_host: '192.168.1.5'
 
 
 # ================= AUTH =================
@@ -46,7 +44,7 @@ import VueAuth from '@websanova/vue-auth'
 
 Vue.use VueAxios, axios
 
-Vue.axios.defaults.baseURL = "http://#{config.crawler_host}:3020"
+Vue.axios.defaults.baseURL = "https://#{config.crawler_host}:3021"
 
 Vue.use VueAuth,
 	http: require('@websanova/vue-auth/drivers/http/axios.1.x.js')
@@ -79,8 +77,8 @@ import VueApollo from 'vue-apollo'
 # import { ApolloClient, createNetworkInterface } from 'apollo-client'
 # import { SubscriptionClient, addGraphQLSubscriptions } from 'subscriptions-transport-ws'
 
-networkInterface = createBatchingNetworkInterface(uri: 'http://192.168.1.5:3020/graphql')
-wsClient = new SubscriptionClient('ws://192.168.1.5:3020/subscriptions', reconnect: true)
+networkInterface = createBatchingNetworkInterface(uri: "https://#{config.crawler_host}:3021/graphql")
+wsClient = new SubscriptionClient("wss://#{config.crawler_host}:3021/subscriptions", reconnect: true)
 
 networkInterfaceWithSubscriptions = addGraphQLSubscriptions(networkInterface, wsClient)
 
@@ -148,6 +146,7 @@ app = new Vue Object.assign {
 
 app.$mount('#app')
 
+# import '@/styles/layout-cool.styl'
 # new Vue(
 # 	el: '#app'
 # 	router: router

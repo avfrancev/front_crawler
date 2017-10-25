@@ -1,13 +1,3 @@
-$Black = #1F2D3D
-$Light_Black = #324057
-$Extra_Light_Black = #475669
-$Silver = #8492A6
-$Light_Silver = #99A9BF
-$Extra_Light_Silver = #C0CCDA
-$Gray = #D3DCE6
-$Light_Gray = #E5E9F2
-$Extra_Light_Gray = #EFF2F7
-$Dark_White = #F9FAFC
 
 .container,
 .container-full {
@@ -20,6 +10,11 @@ $Dark_White = #F9FAFC
 	padding-right: 30px;
 	padding-left: 30px;
 }
+
+.container
+	padding: 2em
+	+sm()
+		padding: 1em
 
 .container .grid,
 .container-full .grid {

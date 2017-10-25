@@ -1,14 +1,10 @@
 <template lang="pug">
-	div#dashboard
-		.container
-			//- Stats
-			//- br
-			//- br
-			Items
-			br
-			br
-			h2 Last Posts
-			LastPosts
+	#dashboard
+		Items
+		br
+		br
+		h2 Last Posts
+		Posts
 </template>
 
 <script lang="coffee">
@@ -20,8 +16,8 @@
 
 		components:
 			# ItemPanel: require '@/components/ItemPanel/ItemPanel.vue'
-			Items: require '@/components/Items'
-			LastPosts: require '@/components/Posts'
+			Items: require '@/views/Items'
+			Posts: require '@/views/Posts'
 			# Stats: require '@/components/Stats'
 
 		# data: ->
@@ -92,8 +88,3 @@
 	}
 
 </script>
-
-<style lang="postcss">
-	/*.items
-		margin: 1em 0.5em*/
-</style>

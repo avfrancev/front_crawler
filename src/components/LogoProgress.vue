@@ -140,7 +140,7 @@
 
 
 
-<style lang="stylus">
+<style scoped lang="stylus">
 	.logo_progress
 		position: absolute
 		left: 50%
@@ -156,13 +156,9 @@
 		background: #eef1f6
 		border-radius: 50%
 		top: 0
-		/*transition: 3s*/
 		opacity: 0.01
 		will-change: transform, opacity
 		transform: scale(0)
-
-		/*&.animate
-			animation: sss 3s cubic-bezier(.34,-0.48,.51,1.51)*/
 
 		&.success
 			background: #13ce66

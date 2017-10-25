@@ -26,6 +26,13 @@ module.exports = {
 									'700': []
 							}
 					},
+					variants: {
+							'PT+Sans+Caption': {
+									// '300': [],
+									'400': [],
+									'700': []
+							}
+					},
 					foundries: ['google']
 			}
 		)

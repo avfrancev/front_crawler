@@ -12,7 +12,7 @@
 				| &nbsp;
 				span(
 					v-for="n,i in splitedCount"
-					class="list-item"
+					class="xxx"
 				)
 					span.invisible {{n}}
 					transition(:name="transitionClass")
@@ -157,7 +157,7 @@
 			height: 100%
 			overflow-y: scroll
 
-		.list-item
+		.xxx
 			display: inline-block
 			position: relative
 

@@ -1,17 +1,23 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 
-import Dashboard from '../views/Dashboard'
-import Post from '../views/Post'
-import Posts from '../views/Posts'
-import Item from '../views/Item'
-import Items from '../views/Items'
+# import Dashboard from '../views/Dashboard'
+# import Post from '../views/Post'
+# import Posts from '../views/Posts'
+# import Item from '../views/Item'
+# import Items from '../views/Items'
 
 Vue.use Router
 
 export default new Router
 	mode: 'history'
 	routes: [
+		{
+			path: '/'
+			name: 'dashboard'
+			component: require '@/views/Dashboard'
+			# meta: auth: ['authenticated']
+		}
 		{
 			path: '/test'
 			name: 'test'
@@ -21,41 +27,44 @@ export default new Router
 			path: '/login'
 			name: 'login'
 			component: require '@/views/Login'
-			meta: auth: false
+			# meta: auth: false
 		}
 		{
-			path: '/'
-			name: 'dashboard'
-			component: Dashboard
-			# meta: auth: ['authenticated']
+			path: '/items'
+			name: 'items'
+			components:
+				default: require '@/views/Items'
+				second: require '@/views/ItemsFilter'
+			# component: require '@/views/Item'
+			# props: {isNew: false}
 		}
 		{
 			path: '/item/:id'
 			name: 'item_edit'
-			component: Item
+			component: require '@/views/Item'
 			props: {isNew: false}
 		}
 		{
 			path: '/item_new'
 			name: 'item_new'
-			component: Item
+			component: require '@/views/Item'
 			props: {isNew: true}
 		}
 		{
 			path: '/posts'
 			name: 'posts'
-			component: require '@/components/Posts'
+			component: require '@/views/Posts'
 		}
-		{
-			path: '/post/:id'
-			name: 'post'
-			component: Post
-		}
-		{
-			path: '/post/:id/edit'
-			name: 'post_edit'
-			component: require('@/views/PostForm.vue')
-		}
+		# {
+		# 	path: '/post/:id'
+		# 	name: 'post'
+		# 	component: Post
+		# }
+		# {
+		# 	path: '/post/:id/edit'
+		# 	name: 'post_edit'
+		# 	component: require('@/views/PostForm.vue')
+		# }
 		{
 			path: '/me'
 			name: 'me'

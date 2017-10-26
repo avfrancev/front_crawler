@@ -73,33 +73,33 @@
 			toggleMenu: -> @leftMenuOpened = !@leftMenuOpened
 
 
-		apollo:
-			items:
-				query: gql ["""
-					{
-						items {
-							id
-							name
-							logo
-							full_name
-							postsCount
-						}
-					}
-				"""]
-				variables:
-					limit: 0
-
-			$subscribe:
-				itemChange:
-					query: gql ["""
-						subscription ppp {
-							ItemChange {
-								id
-								name
-								full_name
-							}
-						}
-					"""]
+		# apollo:
+		# 	items:
+		# 		query: gql ["""
+		# 			{
+		# 				items {
+		# 					id
+		# 					name
+		# 					logo
+		# 					full_name
+		# 					postsCount
+		# 				}
+		# 			}
+		# 		"""]
+		# 		variables:
+		# 			limit: 0
+		#
+		# 	$subscribe:
+		# 		itemChange:
+		# 			query: gql ["""
+		# 				subscription ppp {
+		# 					ItemChange {
+		# 						id
+		# 						name
+		# 						full_name
+		# 					}
+		# 				}
+		# 			"""]
 	}
 </script>
 

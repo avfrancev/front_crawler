@@ -11,16 +11,17 @@
 		color: #fff
 
 .el-button--circle
-	// color: #fff
 	border-radius: 50%
-	// height: 40px
-	// width: 40px
+	height: 45px
+	width: 45px
+	padding: 9px
+	+sm()
+		font-size: 15px
+		height: 35px
+		width: 35px
 
-.el-button--round
-	// color: #fff
+.el-button--rounded
 	border-radius: 20px
-	// height: 40px
-	// width: 40px
 
 .btn-group
 	display: flex
@@ -45,3 +46,16 @@
 
 .el-dropdown-menu
 	padding: 0
+
+.el-message-box
+	max-width: 420px
+	width: auto
+	margin: 0 1em
+
+.v-modal
+	height: 100vh
+	width: 100vw
+
+.el-message-box__wrapper
+	height: 100vh
+	width: 100vw

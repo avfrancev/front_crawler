@@ -177,85 +177,85 @@
 					params: id: @item.id
 					).then (console.log)
 
-		apollo:
-			users: ->
-				query: -> gql ["""
-					query getUsers {
-						users {
-							id
-							displayName
-							username
-						}
-					}
-				"""]
-			item: ->
-				query: -> gql ["""
-					query getItem ($id: String!) {
-						item(id: $id) {
-							id
-							name
-							depth
-							full_name
-							active
-							concurrency
-							parseInterval
-							postsCount
-							status
-							link
-							logo
-							loading
-							schemas
-							data {
-								depth
-								progress
-							}
-							owner {
-								id
-								username
-							}
-							posts {
-								id
-								title
-							}
-						}
-					}
-				"""]
-				variables: ->
-					id: @$route.params.id
-				loadingKey: 'loadingQueriesCount'
-				update: (data) ->
-					# console.log data
-					Object.assign {}, data.item
+		# apollo:
+		# 	users: ->
+		# 		query: -> gql ["""
+		# 			query getUsers {
+		# 				users {
+		# 					id
+		# 					displayName
+		# 					username
+		# 				}
+		# 			}
+		# 		"""]
+		# 	item: ->
+		# 		query: -> gql ["""
+		# 			query getItem ($id: String!) {
+		# 				item(id: $id) {
+		# 					id
+		# 					name
+		# 					depth
+		# 					full_name
+		# 					active
+		# 					concurrency
+		# 					parseInterval
+		# 					postsCount
+		# 					status
+		# 					link
+		# 					logo
+		# 					loading
+		# 					schemas
+		# 					data {
+		# 						depth
+		# 						progress
+		# 					}
+		# 					owner {
+		# 						id
+		# 						username
+		# 					}
+		# 					posts {
+		# 						id
+		# 						title
+		# 					}
+		# 				}
+		# 			}
+		# 		"""]
+		# 		variables: ->
+		# 			id: @$route.params.id
+		# 		loadingKey: 'loadingQueriesCount'
+		# 		update: (data) ->
+		# 			# console.log data
+		# 			Object.assign {}, data.item
 
-			$subscribe:
-				ItemChange:
-					query: gql ["""
-						subscription ppp {
-							ItemChange {
-								id
-								name
-								active
-								full_name
-								postsCount
-								depth
-								status
-								concurrency
-								loading
-								data {
-									progress
-									depth
-								}
-								posts {
-									id
-									title
-								}
-							}
-						}
-					"""]
-					updateQuery: (previousResult, subscriptionData) ->
-						console.log subscriptionData
-					result: (x) ->
-						console.log x
+			# $subscribe:
+			# 	ItemChange:
+			# 		query: gql ["""
+			# 			subscription ppp {
+			# 				ItemChange {
+			# 					id
+			# 					name
+			# 					active
+			# 					full_name
+			# 					postsCount
+			# 					depth
+			# 					status
+			# 					concurrency
+			# 					loading
+			# 					data {
+			# 						progress
+			# 						depth
+			# 					}
+			# 					posts {
+			# 						id
+			# 						title
+			# 					}
+			# 				}
+			# 			}
+			# 		"""]
+			# 		updateQuery: (previousResult, subscriptionData) ->
+			# 			console.log subscriptionData
+			# 		result: (x) ->
+			# 			console.log x
 
 
 	}

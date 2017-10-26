@@ -76,7 +76,7 @@
 
 	import debounce from 'lodash/debounce.js'
 	import throttle from 'lodash/throttle.js'
-	import {items, itemsSubscription, updateItem, removePost, removePosts} from '@/schemas.coffee'
+	import {items, itemsSubscription, updateItem, removePosts} from '@/schemas.coffee'
 	import Counter from '@/components/Counter'
 	import LogoProgress from '@/components/LogoProgress'
 	import gql from 'graphql-tag'
@@ -171,10 +171,16 @@
 						return
 
 			removePosts: ->
-				# console.log @item.id
-				@$apollo.mutate
-					mutation: removePosts
-					variables: { id: @item.id }
+				this.$confirm("Realy delete all posts from #{@item.full_name}?", 'Warning', {
+					confirmButtonText: 'OK'
+					cancelButtonText: 'Cancel'
+					type: 'warning'
+				}).then( =>
+					@$apollo.mutate
+						mutation: removePosts
+						variables: { id: @item.id }
+				)
+
 
 	}
 </script>

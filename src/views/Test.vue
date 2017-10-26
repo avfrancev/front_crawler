@@ -1,44 +1,48 @@
 <template lang="pug">
 	div
-		.inner-content
-			h1 TEST
-			el-button(@click="add") ADD
-			el-button(@click="remove") REMOVE
-			el-button(@click="shuffle") SHUFFLE
-			transition-group(name="xxx" tag="div")
-				div(v-for="item in items" :key="item" class="xxx-item")
-					div
-						h5 {{item}}
-			//- <transition-group name="xxx" tag="p">
-			//- 	<span v-for="item in items" :key="item" class="xxx-item"> {{ item }} </span>
-			//- </transition-group>
+		h1 TEST
+		//- h1 {{localCount}}
+		//- h1 {{count}}
+		//- div(v-for="item of items")
+		//- 	h2 {{item.full_name}} :: {{item.status}} :: {{item.data.progress}}
+		//- hr
+		//- div(v-for="post in posts")
+		//- 	p {{post.title}}
 </template>
 
 <script lang="coffee">
 
-	import _ from 'lodash'
-	import {items, itemsSubscription, updateItem, removePost, removePosts} from '@/schemas.coffee'
-	import Counter from '@/components/Counter'
-	import gql from 'graphql-tag'
+	# import _ from 'lodash'
+	# import {items, itemsSubscription, updateItem, removePost, removePosts} from '@/schemas.coffee'
+	# import Counter from '@/components/Counter'
+	# import gql from 'graphql-tag'
+	# import { mapState } from 'vuex'
 
 	export default {
-		components:
-			Counter: Counter
-			LogoProgress: require '@/components/LogoProgress'
-		data: ->
-			items: [0,1,2,3,4,5,6,7,8,9]
-			nextNum: 10
+		# components:
+		# 	Counter: Counter
+		# 	LogoProgress: require '@/components/LogoProgress'
+		# data: ->
+		# 	nextNum: 10
 
-		methods:
-			randomIndex: ->
-				Math.floor Math.random() * @items.length
-			add: ->
-				@items.splice @randomIndex(), 0, @nextNum++
-			remove: ->
-				@items.splice @randomIndex(), 1
-			shuffle: ->
-				@items = _.shuffle(@items)
+		# computed: {
+		# 	items: -> @$store.state.items
+		# 	posts: ->
+		# 		console.log @$store.state.posts
+		# 		@$store.state.posts
+		# 	localCount: ->
+		# 		return 99
+		# 	mapState(
+		# 		count: 'count'
+		# 	)...
+		# }
 
+		# created: ->
+		# 	@$store.dispatch 'getItems'
+		# 	@$store.dispatch 'getPosts'
+		# 	@$store.dispatch 'subscribeToItems'
+		# 	@$store.dispatch 'subscribeToPosts'
+		# 	return
 
 	}
 </script>

@@ -78,31 +78,60 @@ export postRemove = gql ["""
 	}
 	"""]
 
-export postAdd = gql ["""
-	subscription postsAddSubscription {
-		PostAdd {
-			id
-		}
-	}
-	"""]
 
 export itemsSubscription = gql ["""
 	subscription itemsSubscription {
 		ItemChange {
-			id
-			name
-			active
-			full_name
-			postsCount
-			depth
-			status
-			concurrency
-			nextParseDate
-			parseInterval
-			loading
-			data {
-				progress
+			mutation
+			node {
+				id
+				name
+				active
+				full_name
+				postsCount
 				depth
+				status
+				concurrency
+				nextParseDate
+				parseInterval
+				loading
+				data {
+					progress
+					depth
+				}
+			}
+		}
+	}
+"""]
+
+export postsSubscription = gql ["""
+	subscription postsSubscription {
+		PostChange {
+			mutation
+			node {
+				id
+				title
+				link
+				images
+				status
+				tags
+				parsed_at
+				item {
+					id
+					name
+					full_name
+				}
+				stats {
+					start
+					stop
+					parsingTime
+					size
+				}
+				owner {
+					id
+					displayName
+					username
+				}
 			}
 		}
 	}

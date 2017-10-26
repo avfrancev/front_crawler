@@ -1,10 +1,10 @@
 <template lang="pug">
 	.grid
-		.col-xlg-3.col-lg-4.col-md-6.col-sm-6.col-xs-6(v-for="item of items" :key="item.id")
+		.col-xlg-3.col-lg-4.col-md-4.col-sm-6.col-xs-6(v-for="item of items" :key="item.id")
 			Item(:item="item")
-		.col-xlg-3.col-lg-4.col-md-6.col-sm-6.col-xs-6
-			.new-item
-				.plus-icon
+		//- .col-xlg-3.col-lg-4.col-md-6.col-sm-6.col-xs-6
+		//- 	.new-item
+		//- 		.plus-icon
 </template>
 
 <script lang="coffee">
@@ -64,25 +64,31 @@
 				loadingKey: 'loading'
 				variables:
 					limit: 0
-				# update: (data) ->
-				# 	data.items
+				subscribeToMore:
+					document: itemsSubscription
 
-			$subscribe:
-				ItemChange:
-					query: itemsSubscription
+			# $subscribe:
+			# 	ItemChange:
+			# 		query: itemsSubscription
+			# 		update: (data) -> console.log '==============='
+			# 		updateQuery: (data) ->
+			# 			console.log '!!!!!!!!!!!!!!!!'
+			# 			console.log data
+			# 			data
+			# 			# data.ItemChange
 
-		mounted: ->
-			postRemove = gql ["""
-			 subscription postsSubscription {
-				 PostRemove {
-					 id
-				 }
-			 }
-			 """]
-			@$apollo.queries.items.subscribeToMore
-				document: postRemove
-				# updateQuery: (previousResult, { subscriptionData }) =>
-				# 	@_apollo.queries.items.refetch()
+		# mounted: ->
+		# 	postRemove = gql ["""
+		# 	 subscription postsSubscription {
+		# 		 PostRemove {
+		# 			 id
+		# 		 }
+		# 	 }
+		# 	 """]
+		# 	@$apollo.queries.items.subscribeToMore
+		# 		document: postRemove
+		# 		# updateQuery: (previousResult, { subscriptionData }) =>
+		# 		# 	@_apollo.queries.items.refetch()
 
 
 	}

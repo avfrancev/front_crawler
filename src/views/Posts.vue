@@ -24,8 +24,9 @@
 
 <script lang="coffee">
 
+	import Vue from 'Vue'
 	import debounce from 'lodash/debounce.js'
-	import {posts, removePost, postRemove, postAdd, updatePost} from '@/schemas.coffee'
+	import {posts, postsSubscription, removePost} from '@/schemas.coffee'
 	import gql from 'graphql-tag'
 
 	export default {
@@ -43,57 +44,28 @@
 			, 1000
 
 			removePostByID: (post) ->
-				# console.log post
 				@$apollo.mutate
 					mutation: removePost
 					variables: {id: post.id, itemId: post.item.id}
-			#
-			# updateItem: (id, field) ->
-			# 	@$apollo.mutate(
-			# 		mutation: updateItem
-			# 		variables: Object.assign {id}, field
-			# 	).then((data) =>
-			# 		@$message
-			# 			type: 'success'
-			# 			message: "#{data.data.updateItem.full_name} successfuly updated"
-			# 		# console.log data
-			# 	).catch (err) =>
-			# 		@$notify
-			# 			duration: 30000
-			# 			type: 'error'
-			# 			message: err.graphQLErrors[0]?.message || err
-			#
-			# parse_item: (id) ->
-			# 	@axios.get('/parse'
-			# 		params: id: id
-			# 		).then (console.log)
-			#
-			# removePosts: (id) ->
-			# 	@$apollo.mutate
-			# 		mutation: removePosts
-			# 		variables: { id: id }
 
 		apollo:
 			posts:
 				query: posts
-				variables:
-					limit: 5
-		mounted: ->
-
-			@$apollo.queries.posts.subscribeToMore
-				document: postRemove
-				updateQuery: (previousResult, { subscriptionData }) =>
-					id = subscriptionData.data.PostRemove.id
-					@_apollo.queries.posts.refetch()
-					return previousResult
+			$subscribe:
+				posts:
+					query: postsSubscription
+					result: (data) ->
+						@_apollo.queries.posts.refetch()
+						# Vue.set(@posts, 0, {id: '000000', title: '981365981364678'})
+						return
 
 
-
-			@$apollo.queries.posts.subscribeToMore
-				document: postAdd
-				updateQuery: (previousResult, { subscriptionData }) =>
-					@_apollo.queries.posts.refetch()
-					return previousResult
+		# mounted: ->
+		# 	@$apollo.queries.posts.subscribeToMore
+		# 		document: postsSubscription
+		# 		updateQuery: (previousResult, { subscriptionData }) =>
+		# 			@_apollo.queries.posts.refetch()
+		# 			return previousResult
 
 
 	}

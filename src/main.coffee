@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import VueViewports from 'vue-viewports'
+require('@/hideOnScroll.coffee')
 
 Vue.use VueViewports,
 	0: 'xs'
@@ -11,15 +12,14 @@ Vue.use VueViewports,
 	3840: 'uhd-desktop'
 
 
-import { sync } from 'vuex-router-sync'
+# import { sync } from 'vuex-router-sync'
 # import Layout from '@/views/Layout.vue'
 import Layout from '@/views/LayoutCool.vue'
 import router from '@/router/index.coffee'
-import store from './store'
+# import store from './store/index.coffee'
 
 import Element from 'element-ui'
 
-# import 'element-ui/lib/theme-default/index.css'
 Vue.use Element
 
 
@@ -68,6 +68,8 @@ Vue.use VueAuth,
 
 
 #################### APOLLO #######################
+
+
 import { ApolloClient, createBatchingNetworkInterface } from 'apollo-client'
 import { SubscriptionClient, addGraphQLSubscriptions } from 'subscriptions-transport-ws'
 # import { SubscriptionClient } from 'subscriptions-transport-ws'
@@ -104,54 +106,20 @@ apolloProvider = new VueApollo(
 	# 	return
 )
 
-
-# networkInterface = createBatchingNetworkInterface
-# 	uri: "http://#{config.crawler_host}:3020/graphql"
-#
-#
-# wsClient = new SubscriptionClient(
-# 	"ws://#{config.crawler_host}:3020/subscriptions"
-# 	reconnect: true
-# 	# connectionParams: authToken: localStorage.getItem(GC_AUTH_TOKEN)
-# 	)
-#
-# networkInterfaceWithSubscriptions = addGraphQLSubscriptions(networkInterface, wsClient)
-#
-# apolloClient = new ApolloClient(
-# 	networkInterface: networkInterfaceWithSubscriptions
-# 	connectToDevTools: true)
-#
-# Vue.use(VueApollo)
-#
-# apolloProvider = new VueApollo(
-# 	defaultClient: apolloClient
-# 	defaultOptions: $loadingKey: 'loading')
-
-
-
 ###########################################
 
 
-sync store, router
+# sync store, router
 import moment from 'moment'
 Vue.prototype.$moment = moment
 Vue.config.productionTip = false
 
 
-app = new Vue Object.assign {
+app = new Vue {
 	router
-	store
+	# store
 	apolloProvider
-}, Layout
+	Layout...
+}
 
 app.$mount('#app')
-
-# import '@/styles/layout-cool.styl'
-# new Vue(
-# 	el: '#app'
-# 	router: router
-# 	template: '<App/>'
-# 	components: App: App)
-
-
-# export { app, router, store }

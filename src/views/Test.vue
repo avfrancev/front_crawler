@@ -1,48 +1,44 @@
 <template lang="pug">
-	div
-		h1 TEST
-		//- h1 {{localCount}}
-		//- h1 {{count}}
-		//- div(v-for="item of items")
-		//- 	h2 {{item.full_name}} :: {{item.status}} :: {{item.data.progress}}
-		//- hr
-		//- div(v-for="post in posts")
-		//- 	p {{post.title}}
+	div asdasd
+		//- pre {{items}}
+		//- div(v-for="item in items")
+		//- 	h3 {{item.name}} || {{item.depth}}
+		//- 	input(type="number" :value="item.depth" :data-item-id="item.id" @input="updateCounter")
 </template>
+
+
 
 <script lang="coffee">
 
+	import debounce from 'lodash/debounce.js'
 	# import _ from 'lodash'
 	# import {items, itemsSubscription, updateItem, removePost, removePosts} from '@/schemas.coffee'
-	# import Counter from '@/components/Counter'
+	import Counter from '@/components/Counter'
 	# import gql from 'graphql-tag'
-	# import { mapState } from 'vuex'
 
 	export default {
-		# components:
-		# 	Counter: Counter
-		# 	LogoProgress: require '@/components/LogoProgress'
+		components:
+			Counter: Counter
+			# LogoProgress: require '@/components/LogoProgress'
 		# data: ->
-		# 	nextNum: 10
-
-		# computed: {
-		# 	items: -> @$store.state.items
-		# 	posts: ->
-		# 		console.log @$store.state.posts
-		# 		@$store.state.posts
-		# 	localCount: ->
-		# 		return 99
-		# 	mapState(
-		# 		count: 'count'
-		# 	)...
-		# }
+		# 	# items: [0,1,2,3,4,5,6,7,8,9]
+		# 	items: []
+		# computed:
+			# items: -> @$store.state.items
 
 		# created: ->
 		# 	@$store.dispatch 'getItems'
-		# 	@$store.dispatch 'getPosts'
-		# 	@$store.dispatch 'subscribeToItems'
-		# 	@$store.dispatch 'subscribeToPosts'
-		# 	return
+
+		# methods:
+		# 	updateCounter: ({target}) ->
+		# 		@$store.dispatch 'updateItem', { id: target.dataset.itemId, depth: target.value }
+
+			# updateCounter: debounce (e) ->
+			# 	console.log(e)
+			# 	# @$store.dispatch 'updateItem', field
+			# , 1000
+
+
 
 	}
 </script>

@@ -4,7 +4,7 @@
 			.logo-row
 				.logo 🚀
 				span PARSER
-				BButton.close-btn.bg-c-none.c-white( type="circle" icon="close" size="large" @click="leftOpened = !leftOpened")
+				el-button.close-btn( type="text" size="large" icon="el-icon-circle-close-outline" @click="leftOpened = !leftOpened")
 			hr
 			.left-menu
 				LeftNavIconMenu(name="web-page-home" toName='dashboard' exact) Home
@@ -14,17 +14,21 @@
 
 		nav#left-secondary(:class="{'left-secondary-opened': leftSecondaryOpened}")
 			#left-secondary-body
-				button(@click="leftSecondaryOpened = !leftSecondaryOpened") left secondary
 				router-view(name="second")
 
 		section#main(:class="{'left-secondary-opened': leftSecondaryOpened}")
 			#fakeTop
 			#top
-				BButton.bg-c-none.c-rock-l( v-if="secondNavExisting" :icon="!leftSecondaryOpened ? 'arrow-right':'arrow-left'" size="large" @click="leftSecondaryOpened = !leftSecondaryOpened")
-				div(v-else)
+				//- BButton.bg-c-none.c-rock-l( size="large" @click="$router.back()" v-html="funnelIco")
+				//- BButton( v-if="secondNavExisting" v-html="funnelIco" size="large" @click="leftSecondaryOpened = !leftSecondaryOpened")
+				//- div
+				el-button(v-if="secondNavExisting" size="large" type="text" v-html="funnelIco" @click="leftSecondaryOpened = !leftSecondaryOpened")
 				div
-					UserTop
-				BButton.bg-c-none.c-rock-l( icon="menu" size="large" @click="leftOpened = !leftOpened")
+				div
+				//- div(v-else)
+				UserTop
+				el-button(size="large" type="text" icon='el-icon-menu' @click="leftOpened = !leftOpened")
+				//- BButton.bg-c-none.c-rock-l( icon="menu" size="large" @click="leftOpened = !leftOpened")
 					//- BButton.bg-c-green.c-white(type="round" @click="leftOpened = !leftOpened") leasf as fft
 					//- BButton.bg-c-blue.c-white(type="round" :loading="leftSecondaryOpened" @click="leftSecondaryOpened = !leftSecondaryOpened") left secondary
 			#router-view
@@ -35,6 +39,10 @@
 
 <script lang="coffee">
 
+	import funnelIco from '@/assets/icons/left-alignment.svg'
+
+	# console.log require('@/store/index.coffee').default
+
 	export default {
 
 		components:
@@ -44,11 +52,14 @@
 			LeftNavIconMenu: require '@/components/LeftNavIconMenu'
 
 		data: ->
+			funnelIco: funnelIco
 			leftOpened: false
 			leftSecondaryOpened: false
 			secondNavExisting: false
-			user:
-				name: 'username'
+			state: require('@/store/index.coffee').default
+			postsFilters:
+				limit: 10
+				filter: {}
 
 		computed:
 			secondaryMenuBtnIcon: ->

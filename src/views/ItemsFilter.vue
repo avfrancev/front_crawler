@@ -1,5 +1,6 @@
 <template lang="pug">
-	div Item Filters!!!!!
+	div
+		router-link(:to="{name: 'item_new'}") Add item
 </template>
 
 

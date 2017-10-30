@@ -1,0 +1,28 @@
+/* theme color */
+$--font-path: './../../node_modules/element-ui/lib/theme-chalk/fonts';
+
+$--color-primary: #24b0f7;
+$--xl: 1600px;
+
+@import "./../../node_modules/element-ui/packages/theme-chalk/src/index";
+
+
+// xs()
+// 	@media (max-width: 576px)
+// 		{block}
+//
+// sm()
+// 	@media (max-width: 768px)
+// 		{block}
+//
+// md()
+// 	@media (max-width: 992px)
+// 		{block}
+//
+// lg()
+// 	@media (max-width: 1200px)
+// 		{block}
+//
+// xlg()
+// 	@media (max-width: 1600px)
+// 		{block}

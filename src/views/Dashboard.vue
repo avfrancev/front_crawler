@@ -4,6 +4,7 @@
 		br
 		br
 		h2 Last Posts
+		br
 		Posts
 </template>
 
@@ -17,7 +18,7 @@
 		components:
 			# ItemPanel: require '@/components/ItemPanel/ItemPanel.vue'
 			Items: require '@/views/Items'
-			Posts: require '@/views/Posts'
+			Posts: require '@/views/PostsView'
 			# Stats: require '@/components/Stats'
 
 		# data: ->

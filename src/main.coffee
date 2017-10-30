@@ -1,3 +1,5 @@
+# require './store/apollo2.coffee'
+
 import Vue from 'vue'
 import VueViewports from 'vue-viewports'
 require('@/hideOnScroll.coffee')
@@ -16,11 +18,17 @@ Vue.use VueViewports,
 # import Layout from '@/views/Layout.vue'
 import Layout from '@/views/LayoutCool.vue'
 import router from '@/router/index.coffee'
-# import store from './store/index.coffee'
+# import store from '@/store/index.coffee'
 
 import Element from 'element-ui'
+import locale from 'element-ui/lib/locale/lang/en'
+import './styles/element-variables.scss'
+Vue.use Element, { locale }
 
-Vue.use Element
+Vue.component 'avf-transition-group', require '@/components/avf-transition-group'
+
+# import VueTransitionGroupPlus from "vue-transition-group-plus"
+# Vue.use(VueTransitionGroupPlus)
 
 
 import VueCodeMirror from 'vue-codemirror-lite'
@@ -66,36 +74,46 @@ Vue.use VueAuth,
 # ================= \AUTH\ =================
 
 
-
 #################### APOLLO #######################
 
-
-import { ApolloClient, createBatchingNetworkInterface } from 'apollo-client'
-import { SubscriptionClient, addGraphQLSubscriptions } from 'subscriptions-transport-ws'
-# import { SubscriptionClient } from 'subscriptions-transport-ws'
-# import { addGraphQLSubscriptions } from 'add-graphql-subscriptions'
+import { ApolloClient } from 'apollo-client'
+import { HttpLink } from 'apollo-link-http'
+import { InMemoryCache } from 'apollo-cache-inmemory'
 import VueApollo from 'vue-apollo'
 
-# import { ApolloClient, createNetworkInterface } from 'apollo-client'
-# import { SubscriptionClient, addGraphQLSubscriptions } from 'subscriptions-transport-ws'
+import { split } from 'apollo-link'
+import { WebSocketLink } from 'apollo-link-ws'
+import { getMainDefinition } from 'apollo-utilities'
 
-networkInterface = createBatchingNetworkInterface(uri: "https://#{config.crawler_host}:3021/graphql")
-wsClient = new SubscriptionClient("wss://#{config.crawler_host}:3021/subscriptions", reconnect: true)
+httpLink = new HttpLink(uri: 'https://avfrancev.ddns.net:3021/graphql')
+wsLink = new WebSocketLink(
+	uri: 'wss://avfrancev.ddns.net:3021/subscriptions'
+	options: reconnect: true)
 
-networkInterfaceWithSubscriptions = addGraphQLSubscriptions(networkInterface, wsClient)
+link = split(
+	(({ query }) ->
+		{ kind, operation } = getMainDefinition(query)
+		return kind == 'OperationDefinition' and operation == 'subscription'
+	),
+	wsLink
+	httpLink
+)
+
 
 apolloClient = new ApolloClient(
-	networkInterface: networkInterfaceWithSubscriptions
+	link: link
+	cache: new InMemoryCache
 	connectToDevTools: true)
 
-Vue.use(VueApollo)
 
-loading = 0
+Vue.use VueApollo
 
 apolloProvider = new VueApollo(
-	clients: a: apolloClient
+	# clients:
+	# 	a: apolloClientA
+	# 	b: apolloClientB
 	defaultClient: apolloClient
-	defaultOptions: {}
+	# defaultOptions: $loadingKey: 'loading'
 	# watchLoading: (state, mod) ->
 	# 	loading += mod
 	# 	console.log 'Global loading', loading, mod
@@ -105,6 +123,39 @@ apolloProvider = new VueApollo(
 	# 	console.error error
 	# 	return
 )
+
+
+# import { ApolloClient, createBatchingNetworkInterface } from 'apollo-client'
+# import { SubscriptionClient, addGraphQLSubscriptions } from 'subscriptions-transport-ws'
+# import VueApollo from 'vue-apollo'
+#
+#
+# networkInterface = createBatchingNetworkInterface(uri: "https://#{config.crawler_host}:3021/graphql")
+# wsClient = new SubscriptionClient("wss://#{config.crawler_host}:3021/subscriptions", reconnect: true)
+#
+# networkInterfaceWithSubscriptions = addGraphQLSubscriptions(networkInterface, wsClient)
+#
+# apolloClient = new ApolloClient(
+# 	networkInterface: networkInterfaceWithSubscriptions
+# 	connectToDevTools: true)
+#
+# Vue.use(VueApollo)
+#
+# loading = 0
+#
+# apolloProvider = new VueApollo(
+# 	clients: a: apolloClient
+# 	defaultClient: apolloClient
+# 	defaultOptions: {}
+# 	# watchLoading: (state, mod) ->
+# 	# 	loading += mod
+# 	# 	console.log 'Global loading', loading, mod
+# 	# 	return
+# 	# errorHandler: (error) ->
+# 	# 	console.log 'Global error handler'
+# 	# 	console.error error
+# 	# 	return
+# )
 
 ###########################################
 

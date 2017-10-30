@@ -19,7 +19,7 @@
 						el-switch(v-model='item.active')
 
 					el-form-item(label="Owner")
-						el-select(type="text" v-model="owner")
+						el-select(v-model="owner")
 							el-option(
 								v-for="user in users"
 								:key="user.id"
@@ -73,26 +73,57 @@
 
 		.grid
 			.col-12.tc
-				el-button(type="primary" @click.prevent="onSubmit") SUBMIT
-				el-button(type="danger" @click.prevent="delete_posts") DELETE POSTS
-				el-button(type="primary" @click="parse_item") {{item.loading ? 'LOADING...' : 'PARSE'}}
+				el-button(type="primary" @click.prevent="onSubmit") Create
+				//- el-button(type="danger" @click.prevent="delete_posts") DELETE POSTS
+				//- el-button(type="primary" @click="parse_item") {{item.loading ? 'LOADING...' : 'PARSE'}}
 </template>
 
 <script lang="coffee">
 
-	import {users, item, updateItem} from '@/schemas.coffee'
+	import {users, addItem} from '@/schemas.coffee'
+	schemas= """
+		Gurkha = require 'gurkha'
+
+		module.exports =
+			{
+				page: ->
+					return new Gurkha(
+						posts:
+							'$rule': '.post'
+							title: '.post__title_link'
+							link:
+								'$rule': '.post__title_link'
+								'$sanitizer': ($elem) ->
+									return $elem.attr('href')
+							posted_at:
+								'$rule': '.post__time_published'
+								'$sanitizer': ($elem) ->
+									$elem.text()
+						next_link:
+							'$rule': 'a#next_page'
+							'$sanitizer': ($elem) ->
+								return 'https://habrahabr.ru/' + $elem.attr('href')
+					)
+				post: ->
+					return new Gurkha(
+						images:
+							'$rule': '.content img'
+							'$sanitizer': ($elem) ->
+								return $elem.attr('src')
+					)
+			}
+	"""
 
 	export default {
 
 		components: {
 			Counter: require '@/components/Counter'
-			ItemForm: require '@/components/ItemForm'
 		}
 
 		data: ->
 			loadingQueriesCount: 0
 			users: []
-			item: null
+			owner: @$auth.user().id
 			editorOptions:
 				theme: 'dracula'
 				mode: 'coffeescript'
@@ -100,60 +131,46 @@
 				indentWithTabs: true
 				lineNumbers: true
 				dragDrop: false
-
-
-		computed:
-			owner:
-				get: -> @item.owner.id
-				set: (v) -> @$set(@item, 'owner', Object.assign {}, @item.owner, {id: v})
+			item:
+				active: false
+				postsCount: 0
+				concurrency: 1
+				depth: 1
+				parseInterval: 1
+				schemas: schemas
 
 		methods:
 			onSubmit: ->
+				# console.log {
+				# 	@item...
+				# 	owner: @owner
+				# }
 				@$apollo.mutate(
-					mutation: updateItem
+					mutation: addItem
 					variables: {
 						@item...
-						owner: @item.owner.id
+						owner: @owner
 					}
-						# id: @item.id
-						# concurrency: @item.concurrency
-						# full_name: @item.full_name
-					# update: (store, { data }) ->
-					#   console.log store,data
 				).then((data) =>
+					console.log data
 					@$message
 						type: 'success'
-						message: "#{data.data.updateItem.full_name} successfuly updated"
-					# @$router.back()
+						message: "#{data.data.addItem.full_name} successfuly created"
+					@$router.push({name:'items'})
 					# console.log data
 				).catch (err) =>
+					console.error err
+					console.log @$message
 					@$notify
 						duration: 30000
 						type: 'error'
-						message: err.graphQLErrors[0]?.message || err
+						message: err?.graphQLErrors[0]?.message || err
 				return
 
-			delete_posts: ->
-				@axios.get '/api/remove_item_posts',
-					params: id: @item.id
-				return
-
-			parse_item: ->
-				@axios.get('/parse'
-					params: id: @item.id
-					).then (console.log)
 
 		apollo:
 			users: ->
 				query: -> users
-			item: ->
-				query: -> item
-				variables: ->
-					id: @$route.params.id
-				loadingKey: 'loadingQueriesCount'
-				update: (data) ->
-					# console.log data
-					Object.assign {}, data.item
 
 	}
 </script>

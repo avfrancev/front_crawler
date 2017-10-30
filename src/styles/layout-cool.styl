@@ -1,6 +1,7 @@
 @reset-global pc
-
-@import './../../node_modules/element-ui/lib/theme-default/index.css'
+// @import './../../node_modules/element-ui/lib/theme-default/index.css'
+// src/styles/element-variables.scss
+// @import './../styles/element-variables.scss'
 @import './../styles/vars.styl'
 @import './../styles/grid.styl'
 @import './../styles/override.styl'
@@ -13,7 +14,7 @@ body, html
 	/*font-family: 'Roboto Condensed', sans-serif*/
 	-webkit-font-smoothing: antialiased
 	-moz-osx-font-smoothing: grayscale
-	font-weight: 100
+	font-weight: 400
 	font-size: 14px
 	// font-size: 100%
 	// letter-spacing: 0.5px
@@ -53,6 +54,9 @@ a
 	&:hover
 		color: $blue
 
+.text-muted
+	color: $Light_Silver
+
 /////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////
@@ -84,15 +88,18 @@ nav#left
 		flex: 0 0 100%
 		box-shadow: none
 		transition: 400ms
-		transform: translate3d(-100vw, 0, 0)
+		transform: translate3d(0vw, -100vh, 0)
 		// will-change: transform
 		top: 0
 		left: 0
 		position: absolute
+		opacity: 0.5
 
 		&.opened
 			// will-change: transform
-			transform: translate3d(0vw, 0, 0)
+			opacity: 1
+			transform: translate3d(0vw, 0vh, 0)
+
 
 	.logo-row
 		display: flex
@@ -113,6 +120,8 @@ nav#left
 			+sm()
 				display: block
 		.close-btn
+			font-size: 1em
+			color: #fff
 			position: relative
 			display: none
 			// height: 40px
@@ -157,8 +166,9 @@ nav#left-secondary
 	// will-change: auto
 
 	&.left-secondary-opened
-		flex: 0.0001 1 250px
+		flex: 0.0001 1 260px
 		#left-secondary-body
+			overflow-y: scroll
 			transform: translate3d(0px, 0, 0)
 
 	#left-secondary-body
@@ -167,15 +177,15 @@ nav#left-secondary
 		position: absolute
 		background: $rock
 		height: 100vh
-		width: 250px
-		transform: translate3d(-250px, 0, 0)
+		width: 260px
+		transform: translate3d(-260px, 0, 0)
 		transition: transform .35s
 
 
 	+md()
 		overflow: visible
 		#left-secondary-body
-			transform: translate3d(-250px, 0, 0)
+			transform: translate3d(-260px, 0, 0)
 		&.left-secondary-opened
 			flex: 0.0001 1 0px
 			#left-secondary-body
@@ -184,6 +194,7 @@ nav#left-secondary
 
 section#main
 	overflow: hidden
+	// contain: layout
 	flex: 1
 	display: flex
 	flex-direction: column
@@ -194,7 +205,7 @@ section#main
 		transition: .35s
 		transform: translate3d(0px, 0, 0)
 		&.left-secondary-opened
-			transform: translate3d(250px, 0, 0)
+			transform: translate3d(260px, 0, 0)
 
 #fakeTop
 	box-shadow: 0px -1px 1px hsla(0, 0%, 88%, 1), 0px -5px 21px hsla(213, 32%, 77%, 1)
@@ -211,7 +222,8 @@ section#main
 	align-items: center
 	background: $Extra_Light_Gray
 	z-index: 11
-	transition: transform 400ms
+	transition: 300ms 300ms
+	// transition: transform 400ms
 	// padding: 0 20px
 	// overflow: hidden
 
@@ -219,25 +231,27 @@ section#main
 		height: 60px
 		// padding: 0
 
-	& > button, & .user > *
-		transition: transform 200ms cubic-bezier(.71,0,.35,1.8) 300ms
+	&.nav-up
+		transition: 300ms 300ms
+		transform: translateY(-100%)
+
+
 	& > button
 		// transition: transform 200ms cubic-bezier(.71,0,.35,1.8) 300ms
 		height: 80px
 		width: 80px
+		+sm()
+			height: 60px
+			width: 60px
 		&:last-child
 			border-left: 1px solid $Light_Gray
+		// svg
+		// 	width: 20px
+		// 	fill: $Light_Silver
 
-	&.nav-up
-		transition: 300ms 200ms
-		transform: translateY(-100%)
-		flex: 0
-		& > button, & .user > *
-			transition: 200ms
-			transform: scale(0)
-
-	& > *:nth-child(2)
+	& > div:nth-child(2)
 		flex: 1
+
 
 
 #router-view
@@ -245,6 +259,7 @@ section#main
 	overflow-y: auto
 	width: 100%
 	padding-top: 80px
+	padding-bottom: 80px
 
 	+sm()
 		padding-top: 60px
@@ -271,19 +286,22 @@ section#main
 
 .list-item
 	transition: all 400ms
-	display: block
+	// display: block
 	opacity: 1
-	width 100%
-	heigh: 40px
-	padding: 10px
-	background: #eee
-	margin-bottom: 1px
+	// width 100%
+	// heigh: 40px
+	// padding: 10px
+	// background: #eee
+	// margin-bottom: 1px
 	// width 100%
 	// margin-right: 10px;
 
+.list-enter-active
+	transition-delay: .5s
+
 .list-enter, .list-leave-to
 	opacity: 0.1
-	transform: scale(0.2) translateY(-140px)
+	transform: scale(0.2)
 	// transform: translateX(30px)
 
 .list-leave-active

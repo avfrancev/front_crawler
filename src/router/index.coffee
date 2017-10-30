@@ -9,14 +9,13 @@ import Router from 'vue-router'
 
 Vue.use Router
 
-export default new Router
+router = new Router
 	mode: 'history'
 	routes: [
 		{
 			path: '/'
 			name: 'dashboard'
 			component: require '@/views/Dashboard'
-			# meta: auth: ['authenticated']
 		}
 		{
 			path: '/test'
@@ -35,25 +34,29 @@ export default new Router
 			components:
 				default: require '@/views/Items'
 				second: require '@/views/ItemsFilter'
-			# component: require '@/views/Item'
-			# props: {isNew: false}
 		}
 		{
 			path: '/item/:id'
 			name: 'item_edit'
 			component: require '@/views/Item'
-			props: {isNew: false}
+			meta: auth: ['authenticated']
 		}
 		{
 			path: '/item_new'
 			name: 'item_new'
-			component: require '@/views/Item'
-			props: {isNew: true}
+			component: require '@/views/ItemNew'
 		}
 		{
 			path: '/posts'
 			name: 'posts'
-			component: require '@/views/Posts'
+			components:
+				default: require '@/views/PostsView'
+				second: require '@/views/PostsFilter'
+		}
+		{
+			path: '/post/:id'
+			name: 'post_view'
+			component: require '@/views/PostView'
 		}
 		# {
 		# 	path: '/post/:id'
@@ -68,7 +71,8 @@ export default new Router
 		{
 			path: '/me'
 			name: 'me'
-			component: require('@/views/Me.vue')
+			component: require('@/views/UserProfile')
+			meta: auth: ['authenticated']
 		}
 		{
 			path: '/403'
@@ -81,8 +85,24 @@ export default new Router
 			component: require('@/views/404.vue')
 		}
 		{
+			path: '*'
+			redirect: '404'
+		}
+		{
 			path: '/502'
 			name: 'error-502'
 			component: require('@/views/502.vue')
 		}
 	]
+
+
+
+router.afterEach (to, from, next) ->
+	routerView = document.querySelector("#router-view")
+	window.setTimeout(->
+		routerView.scrollTo 0,0
+	, 500)
+	return
+
+
+export default router

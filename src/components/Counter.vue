@@ -89,8 +89,8 @@
 
 <style scoped lang="stylus">
 	.counter
+		display: inline-block
 		font-family: "Roboto Condensed"
-		flex: 1
 		text-align: center
 		align-self: center
 		user-select: none
@@ -110,17 +110,18 @@
 		.dec, .inc
 			visibility: hidden
 			opacity: 0
+			font-size: 1.2em
 			cursor: pointer
 			transition: .2s
 			a
 				padding: 15px
 
 		.inc
-			margin: 0 0 4px 0
+			margin: 0 0 10px 0
 			transform: translateY(30%)
 
 		.dec
-			margin: 3px 0 0 0
+			margin: 12px 0 0 0
 			transform: translateY(-30%)
 
 

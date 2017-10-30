@@ -1,10 +1,11 @@
 <template lang="pug">
-	.grid
-		.col-xlg-3.col-lg-4.col-md-4.col-sm-6.col-xs-6(v-for="item of items" :key="item.id")
+	//- .grid(v-loading="loading")
+	avf-transition-group(name="list" tag='div' style="" class="grid"  @before-leave="beforeLeave" v-loading="loading")
+		.col-xlg-3.col-lg-4.col-md-6.col-sm-6.col-xs-6(v-for="(item, index) of items" :key="item.id" class="list-item")
 			Item(:item="item")
-		//- .col-xlg-3.col-lg-4.col-md-6.col-sm-6.col-xs-6
-		//- 	.new-item
-		//- 		.plus-icon
+		.col-xlg-3.col-lg-4.col-md-6.col-sm-6.col-xs-6.list-item(key="new" @click="$router.push({name:'item_new'})")
+			.new-item
+				.plus-icon
 </template>
 
 <script lang="coffee">
@@ -20,9 +21,19 @@
 			Item: Item
 		data: ->
 			loading: 0
-			items: []
+			# items: []
 
-		# methods:
+		computed:
+			items: -> @$store.state.items
+
+		methods:
+			beforeLeave: (el) ->
+				{marginLeft, marginTop, width, height} = window.getComputedStyle(el)
+				el.style.left = "#{el.offsetLeft - parseFloat(marginLeft, 10)}px"
+				el.style.top = "#{el.offsetTop - parseFloat(marginTop, 10)}px"
+				el.style.width = width
+				el.style.height = height
+				return
 			# log: (x) -> console.log(x)
 			# updateCounter: debounce (id, field) ->
 			# 	@updateItem(id, field)
@@ -58,14 +69,26 @@
 			# 		mutation: removePosts
 			# 		variables: { id: id }
 
-		apollo:
-			items:
-				query: items
-				loadingKey: 'loading'
-				variables:
-					limit: 0
-				subscribeToMore:
-					document: itemsSubscription
+		# apollo:
+		# 	items: ->
+		# 		query: items
+		# 		loadingKey: 'loading'
+		# 		variables:
+		# 			limit: 0
+		# 		fetchPolicy: 'cache-and-network'
+		# 		subscribeToMore: [{
+		# 			document: itemsSubscription
+		# 			updateQuery: (previousResult, { subscriptionData }) =>
+		# 				# console.log @
+		# 				data = subscriptionData.data.ItemChange
+		# 				if data.mutation is 'DELETED'
+		# 					console.log previousResult
+		# 					a = previousResult.items.filter (x) -> x.id isnt data.node.id
+		# 					console.log a
+		#
+		# 				# @$apollo.queries.items.refetch()
+		# 				return {items: a} || previousResult
+		# 		}]
 
 			# $subscribe:
 			# 	ItemChange:

@@ -3,8 +3,19 @@
 		span.username {{user.username}}
 		//- span {{user}}
 		//- img(:style="{background: 'url('+user.avatar_url+')'}")
-		router-link(:to="{ name: 'login' }")
-			.avatar-image(:style="{ backgroundImage: 'url(' + user.avatar_url + ')' }")
+		//- router-link(:to="{ name: 'login' }")
+		el-dropdown(trigger="click" @command="handleUserMenuClick")
+			span.el-dropdown-link
+				.avatar-image(:style="{ backgroundImage: 'url(' + user.avatar_url + ')' }")
+			el-dropdown-menu(slot="dropdown" )
+				el-dropdown-item(command="myProfile")
+					//- router-link(:to="{name: 'me'}")
+					span(v-html="userIcon")
+					span My profile
+				el-dropdown-item(command="logOut")
+					span(v-html="logoutIcon")
+					span Logout
+				//- el-dropdown-item asdasd
 	.user(v-else)
 		router-link(:to="{ name: 'login' }") Login
 </template>
@@ -13,12 +24,19 @@
 
 <script lang="coffee">
 export default {
-	# data:
-	# 	user: ''
+	data: ->
+		logoutIcon: require '@/assets/icons/logout.svg'
+		userIcon: require '@/assets/icons/avatar.svg'
 	computed:
 		user: -> @$auth.user()
-	# watch:
-	# 	'$'
+	methods:
+		handleUserMenuClick: (command) ->
+			switch command
+				when 'myProfile'
+					@$router.push({name: 'me'})
+				when 'logOut'
+					@$auth.logout()
+			return
 }
 </script>
 

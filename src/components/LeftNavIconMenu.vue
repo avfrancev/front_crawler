@@ -61,8 +61,8 @@
 @import './../styles/vars.styl'
 
 .leftNavIconMenu
-	color: #6a7582
-	fill: #6a7582
+	color: $Silver
+	fill: $Silver
 	height: 90px
 	display: flex
 	flex-direction: column
@@ -75,7 +75,8 @@
 	&:hover, &.is-active
 		color: #fff
 		cursor: pointer
-		fill: #fff
+		// .icon svg
+		fill: #fff !important
 		// z-index: 1
 		// transform: translateX(1px)
 

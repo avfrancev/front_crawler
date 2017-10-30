@@ -38,8 +38,39 @@ export items = gql ["""
 """]
 
 export posts = gql ["""
-	query getPosts ($limit: Int = 111) {
-		posts (limit: $limit) {
+	query getPosts ($limit: Int, $filter: PostsFilter) {
+		posts (limit: $limit, filter: $filter) {
+			id
+			title
+			link
+			images
+			status
+			published
+			tags
+			parsed_at
+			item {
+				id
+				name
+				full_name
+			}
+			stats {
+				start
+				stop
+				parsingTime
+				size
+			}
+			owner {
+				id
+				displayName
+				username
+			}
+		}
+	}
+"""]
+
+export post = gql ["""
+	query getPost ($id: String) {
+		post (id: $id) {
 			id
 			title
 			link
@@ -86,18 +117,33 @@ export itemsSubscription = gql ["""
 			node {
 				id
 				name
-				active
 				full_name
-				postsCount
+				active
+				captureSelector
+				link
+				logo
+				loading
 				depth
 				status
 				concurrency
-				nextParseDate
 				parseInterval
-				loading
+				schemas
+				postsCount
+				nextParseDate
 				data {
-					progress
 					depth
+					parsedPagePostsCount
+					progress
+					PagePostsCount
+				}
+				posts(limit: 10) {
+					id
+					title
+				}
+				owner {
+					id
+					displayName
+					username
 				}
 			}
 		}
@@ -114,6 +160,7 @@ export postsSubscription = gql ["""
 				link
 				images
 				status
+				published
 				tags
 				parsed_at
 				item {
@@ -146,6 +193,7 @@ export updateItem = gql ["""
 		$concurrency: Int
 		$parseInterval: Int
 		$full_name: String
+		$link: String
 		$schemas: String
 		$owner: String
 		) {
@@ -154,6 +202,7 @@ export updateItem = gql ["""
 			active: $active
 			name: $name
 			full_name: $full_name
+			link: $link
 			schemas: $schemas
 			depth: $depth
 			concurrency: $concurrency
@@ -164,6 +213,46 @@ export updateItem = gql ["""
 			active
 			name
 			full_name
+			link
+			depth
+			schemas
+			concurrency
+			parseInterval
+			owner {
+				id
+			}
+		}
+	}
+"""]
+
+export addItem = gql ["""
+	mutation (
+		$active: Boolean
+		$name: String
+		$depth: Int
+		$concurrency: Int
+		$parseInterval: Int
+		$full_name: String
+		$link: String
+		$schemas: String
+		$owner: String
+		) {
+		addItem(
+			active: $active
+			name: $name
+			full_name: $full_name
+			link: $link
+			schemas: $schemas
+			depth: $depth
+			concurrency: $concurrency
+			parseInterval: $parseInterval
+			owner: $owner
+		) {
+			id
+			active
+			name
+			full_name
+			link
 			depth
 			schemas
 			concurrency
@@ -179,12 +268,16 @@ export updatePost = gql ["""
 	mutation (
 		$id: String!
 		$status: String
+		$published: Boolean
 		) {
 		updatePost(
 			id: $id
 			status: $status
+			published: $published
 		) {
 			id
+			status
+			published
 		}
 	}
 """]
@@ -204,6 +297,18 @@ export removePost = gql ["""
 	}
 """]
 
+export removeItem = gql ["""
+	mutation (
+		$id: String!
+		) {
+		removeItem(
+			id: $id
+		) {
+			id
+		}
+	}
+"""]
+
 export removePosts = gql ["""
 	mutation (
 		$id: String!
@@ -212,6 +317,48 @@ export removePosts = gql ["""
 			id: $id
 		) {
 			id
+		}
+	}
+"""]
+
+export users = gql ["""
+	query getUsers {
+		users {
+			id
+			displayName
+			username
+		}
+	}
+"""]
+
+export item = gql ["""
+	query getItem ($id: String!) {
+		item(id: $id) {
+			id
+			name
+			depth
+			full_name
+			active
+			concurrency
+			parseInterval
+			postsCount
+			status
+			link
+			logo
+			loading
+			schemas
+			data {
+				depth
+				progress
+			}
+			owner {
+				id
+				username
+			}
+			posts {
+				id
+				title
+			}
 		}
 	}
 """]

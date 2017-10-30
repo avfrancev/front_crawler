@@ -1,7 +1,7 @@
 window.onload = ->
 	didScroll = undefined
 	lastScrollTop = 0
-	delta = 5
+	delta = 55
 	view = document.querySelector('#router-view')
 	fakeTop = document.querySelector('#fakeTop')
 	navTop = document.querySelector('#top')
@@ -27,7 +27,11 @@ window.onload = ->
 		if st > lastScrollTop and st > 90
 			navTop.classList.add 'nav-up'
 			fakeTop.classList.add 'nav-up'
+			navTop.classList.remove 'nav-down'
+			fakeTop.classList.remove 'nav-down'
 		else
+			navTop.classList.add 'nav-down'
+			fakeTop.classList.add 'nav-down'
 			navTop.classList.remove 'nav-up'
 			fakeTop.classList.remove 'nav-up'
 

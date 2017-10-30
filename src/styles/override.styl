@@ -1,43 +1,63 @@
 
 
-
-.el-button + .el-button
-	margin-left: 0
+//
+// .el-button + .el-button
+// 	margin-left: 0
+//
+// .el-button
+// 	border: none
+// 	font-weight: bold
+// 	fill: $Light_Silver
+// 	transition: 200ms
+// 	&:hover, &:active, &:focus
+// 		fill: $blue
+// 		color: #fff
+//
+// .el-button--circle
+// 	border-radius: 50%
+// 	height: 45px
+// 	width: 45px
+// 	padding: 9px
+// 	+sm()
+// 		font-size: 15px
+// 		height: 35px
+// 		width: 35px
+//
+// .el-button--rounded
+// 	border-radius: 20px
+//
+// .el-button--large
+// 	svg
+// 		height: 16px
+// 		width: 16px
+//
+// .btn-group
+// 	display: flex
+// 	& > button:first-child
+// 		border-radius: 4px 0 0 4px
+// 	& > button:last-child
+// 		border-radius: 0 4px 4px 0
+// 	&.rounded > button:first-child
+// 		border-radius: 20px 0 0 20px
+// 	&.rounded > button:last-child
+// 		border-radius: 0 20px 20px 0
+//
+// 	button
+// 		border-radius: 0
+//
 
 .el-button
-	border: none
-	font-weight: bold
-	&:hover, &:active, &:focus
-		color: #fff
+	svg
+		width: 20px
+		fill: $Light_Silver
+		transition: fill 200ms
+	&:hover
+		svg
+			fill: $blue
 
-.el-button--circle
-	border-radius: 50%
-	height: 45px
-	width: 45px
-	padding: 9px
-	+sm()
-		font-size: 15px
-		height: 35px
-		width: 35px
-
-.el-button--rounded
-	border-radius: 20px
-
-.btn-group
-	display: flex
-	& > button:first-child
-		border-radius: 4px 0 0 4px
-	& > button:last-child
-		border-radius: 0 4px 4px 0
-	&.rounded > button:first-child
-		border-radius: 20px 0 0 20px
-	&.rounded > button:last-child
-		border-radius: 0 20px 20px 0
-
-	button
-		border-radius: 0
-
-
+.el-button--text
+	color: $Silver
+	fill: $Silver
 
 .el-dropdown
 	& > .icon
@@ -46,6 +66,13 @@
 
 .el-dropdown-menu
 	padding: 0
+
+.el-dropdown-menu__item
+	svg
+		height: 14px
+		margin: 0px 12px -3px 0
+	&:hover
+		fill: $blue
 
 .el-message-box
 	max-width: 420px
@@ -59,3 +86,69 @@
 .el-message-box__wrapper
 	height: 100vh
 	width: 100vw
+
+
+.CodeMirror
+	border: 1px solid #eee
+	// max-height: 200px
+	height: auto
+
+.el-select__tags
+	overflow: hidden
+
+.xxx-pop
+	background: $rock_light
+	border-color: $rock_dark
+	.popper__arrow
+		border-bottom-color: $rock_dark !important
+		&:after
+			border-bottom-color: $rock_light !important
+	.el-select-dropdown__item.selected
+		background-color: $rock_light !important
+		color: #fff !important
+	.el-select-dropdown__item
+		color: $Silver
+		background: $rock_light
+		&.hover
+			background: $rock_light
+			color: #fff
+
+#left-secondary-body
+	padding: 26px 15px
+	& > div > div
+		padding: 15px 0
+	input
+		color: $Extra_Light_Silver
+		font-weight: bold
+		background: none
+		border: none
+		border-bottom: 1px dotted $rock_dark
+		&:focus
+			color: #fff
+
+	.el-input-number
+		border-bottom: none !important
+		span
+			background: $rock
+			border: none
+			font-size: 1.1em
+		input
+			font-size: 1.5em
+			border-bottom: none !important
+
+	.el-input--prefix .el-input__inner
+		padding-left: 40px
+
+
+
+	.el-tag
+		background: $rock
+		color: $Extra_Light_Silver
+		border-color: $Black
+		.el-tag__close
+			background: none
+			&:hover
+				color: #fff
+
+	.el-select
+		width: 100%

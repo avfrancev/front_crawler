@@ -1,21 +1,30 @@
 <template lang="pug">
 	//- .ttt(style="padding: 50px; background: grey") {{item.full_name}}
-	.item(:id="'item-'+item.id")
+	.item(
+		v-if="item"
+		:id="'item-'+item.id"
+		:class="item.active ? 'active' : 'inactive' "
+		v-loading="itemLoading"
+		)
 		section.head
 			el-dropdown.item-dropdown(trigger="click" @command="handleItemCommand")
 				span.el-dropdown
 					.icon(v-html="menuIcon")
 				el-dropdown-menu(slot="dropdown")
+					el-dropdown-item(command="switchActiveState") {{ item.active ? 'Deactivate' : 'Activate' }}
 					el-dropdown-item(command="removePosts") Remove posts
 					el-dropdown-item Publish all posts
 					el-dropdown-item Unpublish all posts
+					el-dropdown-item(command="removeItem") Delete
 			.head__body
 				h4: b {{item.full_name}}
 				br
 				span by
 				="   "
-				span {{item.owner.displayName || item.owner.username}}
-				p: b Status: {{item.status}}
+				//- span {{item.owner.displayName || item.owner.username}}
+				p
+					| Status: {{' '}}
+					b {{item.status}}
 				h4 {{progress}}
 			LogoProgress(
 				:id="item.id"
@@ -26,7 +35,7 @@
 				)
 
 		section.body
-			h3 {{duration}} at {{nextParseDate}}
+			//- h3 {{duration}} at {{nextParseDate}}
 		section.counters
 			Counter(
 				name="posts"
@@ -43,40 +52,27 @@
 				:editable="canEdit ? 'parseInterval': false")
 
 		section.buttons(v-if="canEdit")
-			.btn-group.rounded
-				BButton.bg-c-blue.c-white(
-					type="round"
-					icon="el-icon-delete!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
-					/*size='small'*/
+			el-button-group
+				el-button(
+					round
+					size="small"
+					type="primary"
 					:loading="item.loading || item.status == 'queued'"
 					@click="parse_item"
 					) {{item.loading ? 'LOADING...' : item.status != 'success' ? item.status : 'PARSE'}}
-				BButton.bg-c-blue.c-white(
-					type="round"
-					/*size='small'*/
-					:loading="false"
+				el-button(
+					round
+					size="small"
+					type="primary"
 					@click="$router.push({ name: 'item_edit', params: {id: item.id}})"
 					) edit
-				//- BButton.bg-c-blue.c-white(type="round" size='small' :loading="false" @click="leftSecondaryOpened = !leftSecondaryOpened") left
-			//- el-button-group
-			//- 	//- :loading="item.loading || item.status != ''"
-			//- 	el-button(
-			//- 		type="info"
-			//- 		/*size="small"*/
-			//- 		:loading="item.loading"
-			//- 		@click="parse_item") {{item.loading ? 'LOADING...' : item.status != 'success' ? item.status : 'PARSE'}}
-			//- 	router-link.el-button.el-button--info.el-button--small(
-			//- 		:to="{ name: 'item_edit', params: {id: item.id} }"
-			//- 		tag="button"
-			//- 		) EDIT
-			//- 	el-button(type="info" size="small" @click="menuOpened = !menuOpened") &#9776;
 </template>
 
 <script lang="coffee">
 
 	import debounce from 'lodash/debounce.js'
 	import throttle from 'lodash/throttle.js'
-	import {items, itemsSubscription, updateItem, removePosts} from '@/schemas.coffee'
+	import {items, itemsSubscription, updateItem, removePosts, removeItem} from '@/schemas.coffee'
 	import Counter from '@/components/Counter'
 	import LogoProgress from '@/components/LogoProgress'
 	import gql from 'graphql-tag'
@@ -92,16 +88,17 @@
 
 		props: ['item']
 		data: ->
+			itemLoading: false
 			menuOpened: false
 			duration: ''
 			menuIcon: require("@/assets/icons/menu.svg")
 
-		created: ->
-			@duration = @getNextParseDate()
-			interval = 1 * 1000
-			setInterval =>
-				@duration = @getNextParseDate()
-			, interval
+		# created: ->
+		# 	@duration = @getNextParseDate()
+		# 	interval = 1 * 1000
+		# 	setInterval =>
+		# 		@duration = @getNextParseDate()
+		# 	, interval
 
 		computed:
 			nextParseDate: ->
@@ -139,24 +136,29 @@
 			# 	@menuOpened = false
 			# , 500
 			updateCounter: debounce (id, field) ->
+				console.log id, field
 				@updateItem(id, field)
 			, 1000
 
 
 			updateItem: (field) ->
-				@$apollo.mutate(
-					mutation: updateItem
-					variables: Object.assign {id: @item.id}, field
-				).then((data) =>
-					@$message
-						type: 'success'
-						message: "#{data.data.updateItem.full_name} successfuly updated"
-					# console.log data
-				).catch (err) =>
-					@$notify
-						duration: 30000
-						type: 'error'
-						message: err.graphQLErrors[0]?.message || err
+				# @itemLoading = true
+				@$store.dispatch 'updateItem', { id: @item.id, field... }
+				# @$apollo.mutate(
+				# 	mutation: updateItem
+				# 	variables: Object.assign {id: @item.id}, field
+				# ).then((data) =>
+				# 	@itemLoading = false
+				# 	# @$message
+				# 	# 	type: 'success'
+				# 	# 	message: "#{data.data.updateItem.full_name} successfuly updated"
+				# 	# console.log data
+				# ).catch (err) =>
+				# 	@itemLoading = false
+				# 	@$notify
+				# 		duration: 30000
+				# 		type: 'error'
+				# 		message: err.graphQLErrors[0]?.message || err
 
 			parse_item: ->
 				@axios.get('/parse'
@@ -167,6 +169,10 @@
 				switch command
 					when 'removePosts'
 						do @removePosts
+					when 'removeItem'
+						do @removeItem
+					when 'switchActiveState'
+						@updateItem { active: !@item.active }
 					else
 						return
 
@@ -178,6 +184,17 @@
 				}).then( =>
 					@$apollo.mutate
 						mutation: removePosts
+						variables: { id: @item.id }
+				)
+
+			removeItem: ->
+				this.$confirm("Realy delete item #{@item.full_name}?", 'Warning', {
+					confirmButtonText: 'OK'
+					cancelButtonText: 'Cancel'
+					type: 'warning'
+				}).then( =>
+					@$apollo.mutate
+						mutation: removeItem
 						variables: { id: @item.id }
 				)
 
@@ -198,8 +215,20 @@
 		height: 100%
 		display: flex
 		flex-direction: column
-		//&:hover
-		//	box-shadow: 0 0 8px 0 rgba(232,237,250,.6), 0 2px 4px 0 rgba(232,237,250,.5)
+		transition: 300ms
+		&.active
+			opacity: 1
+			filter: saturate(1)
+		&.inactive
+			opacity: 0.4
+			filter: saturate(0.2)
+			&:hover
+				opacity: 0.65
+		&:hover
+			box-shadow: 0 0 8px 0 rgba(232,237,250,.6), 0 2px 4px 0 rgba(232,237,250,.5)
+			opacity: 1
+			filter: saturate(1)
+
 
 		hr
 			border: none
@@ -254,7 +283,7 @@
 
 	section.buttons
 		/*padding: 0 20px 20px*/
-		.btn-group
+		.el-button-group
 			display: flex
 			button, a
 				flex: 0 0 1

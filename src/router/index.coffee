@@ -32,8 +32,8 @@ router = new Router
 			path: '/items'
 			name: 'items'
 			components:
-				default: require '@/views/Items'
-				second: require '@/views/ItemsFilter'
+				default: require '@/views/ItemsView'
+				# second: require '@/views/ItemsFilter'
 		}
 		{
 			path: '/item/:id'
@@ -98,9 +98,8 @@ router = new Router
 
 
 router.afterEach (to, from, next) ->
-	routerView = document.querySelector("#router-view")
 	window.setTimeout(->
-		routerView.scrollTo 0,0
+		document.querySelector("#router-view").scrollTo 0,0
 	, 500)
 	return
 

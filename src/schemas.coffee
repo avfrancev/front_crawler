@@ -8,6 +8,7 @@ export items = gql ["""
 			full_name
 			active
 			captureSelector
+			takeScreenshot
 			link
 			logo
 			loading
@@ -46,6 +47,7 @@ export posts = gql ["""
 			images
 			status
 			published
+			hasScreenshot
 			tags
 			parsed_at
 			item {
@@ -77,6 +79,8 @@ export post = gql ["""
 			images
 			status
 			tags
+			published
+			hasScreenshot
 			parsed_at
 			item {
 				id
@@ -98,16 +102,6 @@ export post = gql ["""
 	}
 """]
 
-export postRemove = gql ["""
-	subscription postsRemoveSubscription {
-	 PostRemove {
-		 id
-		 item {
-			 name
-		 }
-	 }
-	}
-	"""]
 
 
 export itemsSubscription = gql ["""
@@ -120,6 +114,7 @@ export itemsSubscription = gql ["""
 				full_name
 				active
 				captureSelector
+				takeScreenshot
 				link
 				logo
 				loading
@@ -161,6 +156,7 @@ export postsSubscription = gql ["""
 				images
 				status
 				published
+				hasScreenshot
 				tags
 				parsed_at
 				item {
@@ -190,10 +186,13 @@ export updateItem = gql ["""
 		$active: Boolean
 		$name: String
 		$depth: Int
+		$captureSelector: String
+		$takeScreenshot: Boolean
 		$concurrency: Int
 		$parseInterval: Int
 		$full_name: String
 		$link: String
+		$logo: String
 		$schemas: String
 		$owner: String
 		) {
@@ -203,8 +202,11 @@ export updateItem = gql ["""
 			name: $name
 			full_name: $full_name
 			link: $link
+			logo: $logo
 			schemas: $schemas
 			depth: $depth
+			captureSelector: $captureSelector
+			takeScreenshot: $takeScreenshot
 			concurrency: $concurrency
 			parseInterval: $parseInterval
 			owner: $owner
@@ -214,7 +216,10 @@ export updateItem = gql ["""
 			name
 			full_name
 			link
+			logo
 			depth
+			captureSelector
+			takeScreenshot
 			schemas
 			concurrency
 			parseInterval
@@ -234,6 +239,7 @@ export addItem = gql ["""
 		$parseInterval: Int
 		$full_name: String
 		$link: String
+		$logo: String
 		$schemas: String
 		$owner: String
 		) {
@@ -242,6 +248,7 @@ export addItem = gql ["""
 			name: $name
 			full_name: $full_name
 			link: $link
+			logo: $logo
 			schemas: $schemas
 			depth: $depth
 			concurrency: $concurrency
@@ -254,6 +261,7 @@ export addItem = gql ["""
 			full_name
 			link
 			depth
+			logo
 			schemas
 			concurrency
 			parseInterval
@@ -285,14 +293,32 @@ export updatePost = gql ["""
 export removePost = gql ["""
 	mutation (
 		$id: String!
-		$itemId: String
+		$item: ItemInput
 		) {
 		removePost(
 			id: $id
-			itemId: $itemId
+			item: $item
 		) {
 			id
-			itemId
+			item {
+				id
+				name
+			}
+		}
+	}
+"""]
+
+export removePosts = gql ["""
+	mutation (
+		$item: ItemInput!
+		) {
+		removePosts(
+			item: $item
+		) {
+			item {
+				id
+				name
+			}
 		}
 	}
 """]
@@ -302,18 +328,6 @@ export removeItem = gql ["""
 		$id: String!
 		) {
 		removeItem(
-			id: $id
-		) {
-			id
-		}
-	}
-"""]
-
-export removePosts = gql ["""
-	mutation (
-		$id: String!
-		) {
-		removePosts(
 			id: $id
 		) {
 			id
@@ -341,6 +355,8 @@ export item = gql ["""
 			active
 			concurrency
 			parseInterval
+			captureSelector
+			takeScreenshot
 			postsCount
 			status
 			link

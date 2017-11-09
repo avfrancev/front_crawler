@@ -17,7 +17,7 @@
 
 		components:
 			# ItemPanel: require '@/components/ItemPanel/ItemPanel.vue'
-			Items: require '@/views/Items'
+			Items: require '@/views/ItemsView'
 			Posts: require '@/views/PostsView'
 			# Stats: require '@/components/Stats'
 

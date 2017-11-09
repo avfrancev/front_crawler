@@ -7,25 +7,34 @@
 		v-loading="itemLoading"
 		)
 		section.head
-			el-dropdown.item-dropdown(trigger="click" @command="handleItemCommand")
+			el-dropdown.item-dropdown(trigger="click" @command="handleItemCommand" v-if="canEdit")
 				span.el-dropdown
 					.icon(v-html="menuIcon")
 				el-dropdown-menu(slot="dropdown")
 					el-dropdown-item(command="switchActiveState") {{ item.active ? 'Deactivate' : 'Activate' }}
 					el-dropdown-item(command="removePosts") Remove posts
+					el-dropdown-item(command="downloadScreenshots" v-if="item.takeScreenshot") Download screenshots
 					el-dropdown-item Publish all posts
 					el-dropdown-item Unpublish all posts
 					el-dropdown-item(command="removeItem") Delete
 			.head__body
 				h4: b {{item.full_name}}
 				br
-				span by
-				="   "
-				//- span {{item.owner.displayName || item.owner.username}}
-				p
-					| Status: {{' '}}
-					b {{item.status}}
-				h4 {{progress}}
+				//- span by {{item.owner.displayName || item.owner.username}}
+				//- ="   "
+				//- //- span {{item.owner.displayName || item.owner.username}}
+				//- p
+				//- 	| Status: {{' '}}
+				//- 	b {{item.status}}
+				table
+					tr
+						td Created by
+						td {{item.owner.displayName || item.owner.username}}
+					tr
+						td Next run at
+						td
+							b(:ref="'nextParseDate'+item.id" style="display: inline-block") {{$moment(+nextParseDate).fromNow()}}
+							//- b(:ref="'nextParseDate'+item.id" style="display: inline-block") {{$moment(+item.nextParseDate).format('HH:mm')}}
 			LogoProgress(
 				:id="item.id"
 				:bgImg="item.logo"
@@ -34,8 +43,9 @@
 				:status="item.status"
 				)
 
-		section.body
-			//- h3 {{duration}} at {{nextParseDate}}
+		section.body(style="text-align: center")
+			h4(v-if="item.status == 'error'" style="color:red; font-weight:bold") ERROR
+
 		section.counters
 			Counter(
 				name="posts"
@@ -70,8 +80,8 @@
 
 <script lang="coffee">
 
+	import Vue from 'vue'
 	import debounce from 'lodash/debounce.js'
-	import throttle from 'lodash/throttle.js'
 	import {items, itemsSubscription, updateItem, removePosts, removeItem} from '@/schemas.coffee'
 	import Counter from '@/components/Counter'
 	import LogoProgress from '@/components/LogoProgress'
@@ -92,6 +102,7 @@
 			menuOpened: false
 			duration: ''
 			menuIcon: require("@/assets/icons/menu.svg")
+			nextParseDate: @item.nextParseDate
 
 		# created: ->
 		# 	@duration = @getNextParseDate()
@@ -99,21 +110,35 @@
 		# 	setInterval =>
 		# 		@duration = @getNextParseDate()
 		# 	, interval
+		# computed:
+		# 	nextParseDate: -> +@item.nextParseDate
+
+		watch:
+			'item.nextParseDate': (x,y) ->
+				setTimeout =>
+					@nextParseDate = x
+				, 100
+				anime
+					targets: @$refs['nextParseDate'+@item.id]
+					translateX: [
+						{value: [0, -15], easing: 'easeInQuad', duration: 100}
+						{value: 0, elasticity: 500}
+					]
+					opacity: [
+						{value: [1, 0.01], easing: 'linear', duration: 100}
+						{value: 1}
+					]
+				return
 
 		computed:
-			nextParseDate: ->
-				if @item.nextParseDate
-					@$moment.utc
-					@$moment(new Date(+@item.nextParseDate)).format('HH:mm:ss')
-				else 'no date'
+			# nextParseDate: ->
+			# 	if @item.nextParseDate
+			# 		@$moment.utc
+			# 		@$moment(new Date(+@item.nextParseDate)).format('HH:mm:ss')
+			# 	else 'no date'
 
 			progress: ->
 				@item.data.progress || 0
-
-			progressStatus: ->
-				'asfasf'
-				# if @item.status is 'error' then return 'exception'
-				# else if @progress is 100 then return 'success'
 
 			canEdit: ->
 				@$auth.user().id is @item.owner.id || @$auth.check('admin')
@@ -126,39 +151,42 @@
 		methods:
 			log: (x) -> console.log(x)
 
+			debounce: debounce
+
 			getNextParseDate: ->
 				unless @item.nextParseDate then return 'not active'
 				next = @$moment(new Date(+@item.nextParseDate))
 				diff = @$moment.duration(next.diff @$moment()).asMilliseconds()
 				@$moment.utc(diff).format('HH:mm:ss')
 
-			# debounceCloseMenu: debounce ->
-			# 	@menuOpened = false
-			# , 500
-			updateCounter: debounce (id, field) ->
-				console.log id, field
-				@updateItem(id, field)
-			, 1000
 
+			downloadScreenshots: ->
+				url = "https://avfrancev.ddns.net:3021/get-screenshots/?item=#{@item.name}"
+				window.open url, '_blank'
+				return
+
+			updateCounter: debounce (_field) ->
+				@updateItem(_field)
+			, 500
 
 			updateItem: (field) ->
+				console.log field
 				# @itemLoading = true
-				@$store.dispatch 'updateItem', { id: @item.id, field... }
-				# @$apollo.mutate(
-				# 	mutation: updateItem
-				# 	variables: Object.assign {id: @item.id}, field
-				# ).then((data) =>
-				# 	@itemLoading = false
-				# 	# @$message
-				# 	# 	type: 'success'
-				# 	# 	message: "#{data.data.updateItem.full_name} successfuly updated"
-				# 	# console.log data
-				# ).catch (err) =>
-				# 	@itemLoading = false
-				# 	@$notify
-				# 		duration: 30000
-				# 		type: 'error'
-				# 		message: err.graphQLErrors[0]?.message || err
+				@$apollo.mutate(
+					mutation: updateItem
+					variables: Object.assign {id: @item.id}, field
+				).then((data) =>
+					# @itemLoading = false
+					# @$message
+					# 	type: 'success'
+					# 	message: "#{data.data.updateItem.full_name} successfuly updated"
+					# console.log data
+				).catch (err) =>
+					@itemLoading = false
+					@$notify
+						duration: 30000
+						type: 'error'
+						message: err.graphQLErrors[0]?.message || err
 
 			parse_item: ->
 				@axios.get('/parse'
@@ -171,6 +199,8 @@
 						do @removePosts
 					when 'removeItem'
 						do @removeItem
+					when 'downloadScreenshots'
+						do @downloadScreenshots
 					when 'switchActiveState'
 						@updateItem { active: !@item.active }
 					else
@@ -184,7 +214,7 @@
 				}).then( =>
 					@$apollo.mutate
 						mutation: removePosts
-						variables: { id: @item.id }
+						variables: { item: {id: @item.id, name: @item.name} }
 				)
 
 			removeItem: ->
@@ -207,7 +237,7 @@
 	@import './../styles/vars.styl'
 
 	.item
-		border: 1px solid $Extra_Light_Gray
+		border: 1px solid $grey_1
 		border-radius: 4px
 		background: #fff
 		position: relative
@@ -241,14 +271,30 @@
 
 	section.head
 		position: relative
-		background: #f4f5fa
+		background: $grey_0
 		padding-bottom: 65px
 		padding-top: 20px
+		margin-bottom: 60px
 		flex: 1
 
 		.head__body
 			text-align: center
 			margin: 0 20px
+
+			table
+				width: 100%
+				tr
+					td
+						width: 50%
+					td:first-child
+						padding-right: 5px
+						text-align: right
+						color: $Light_Silver
+						font-size: 12.5px
+						line-height: 20px
+					td:last-child
+						padding-left: 5px
+						text-align: left
 
 		.image
 			position: absolute
@@ -264,8 +310,8 @@
 			height: 60px
 			width: 60px
 
-	section.body
-		margin-top: 65px
+	// section.body
+	// 	margin-top: 65px
 
 
 
@@ -296,6 +342,6 @@
 		padding: 0 15px
 		right: 0
 		// z-index: 1
-		fill: #475669
+		fill: $Light_Silver
 
 </style>

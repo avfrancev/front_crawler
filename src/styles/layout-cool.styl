@@ -21,7 +21,7 @@ body, html
 	height: 100%
 	width: 100%
 	box-sizing: border-box
-	// background: $Dark_White
+	background: $Dark_White
 	color: $Extra_Light_Black
 	overflow: hidden
 
@@ -55,7 +55,9 @@ a
 		color: $blue
 
 .text-muted
-	color: $Light_Silver
+	color: $Extra_Light_Silver
+
+
 
 /////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////
@@ -78,7 +80,7 @@ nav#left
 	z-index: 2
 	background: $rock_light
 	will-change: transform
-	// background-image: url("~@/assets/dirt.png")
+	background-image: url("~@/assets/dirt.png")
 	overflow-y: scroll
 	overflow-x: hidden
 
@@ -93,11 +95,9 @@ nav#left
 		top: 0
 		left: 0
 		position: absolute
-		opacity: 0.5
 
 		&.opened
 			// will-change: transform
-			opacity: 1
 			transform: translate3d(0vw, 0vh, 0)
 
 
@@ -170,6 +170,8 @@ nav#left-secondary
 		#left-secondary-body
 			overflow-y: scroll
 			transform: translate3d(0px, 0, 0)
+			background-image: url("~@/assets/dirt.png")
+
 
 	#left-secondary-body
 	// 	overflow: hidden
@@ -252,6 +254,11 @@ section#main
 	& > div:nth-child(2)
 		flex: 1
 
+	.show_menu_small
+		display: none
+		+sm()
+			display: block
+
 
 
 #router-view
@@ -270,7 +277,8 @@ section#main
 	// 		max-width: $sm
 
 .router-item
-	transition: all 300ms 200ms
+	transition: all 300ms 300ms
+	position: relative
 	+sm()
 		transition: all 300ms 600ms
 	// *

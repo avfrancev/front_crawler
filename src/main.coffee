@@ -103,6 +103,7 @@ link = split(
 apolloClient = new ApolloClient(
 	link: link
 	cache: new InMemoryCache
+	dataIdFromObject: (o) -> o.id
 	connectToDevTools: true)
 
 
@@ -162,6 +163,7 @@ apolloProvider = new VueApollo(
 
 # sync store, router
 import moment from 'moment'
+moment.defaultFormat = 'YYYY'
 Vue.prototype.$moment = moment
 Vue.config.productionTip = false
 

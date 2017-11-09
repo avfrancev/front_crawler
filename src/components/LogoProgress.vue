@@ -1,6 +1,6 @@
 <template>
 		<div class="logo_progress" :style="logoProgressStyles" >
-			<div @click="aaa">
+			<div>
 				<svg viewBox="0 0 100 100">
 					<path :d="trackPath" stroke="#eef1f6" :stroke-width="relativeStrokeWidth" fill="none"></path>
 					<path :d="trackPath" stroke-linecap="round" :stroke="stroke" :stroke-width="relativeStrokeWidth" fill="none" :style="circlePathStyle"></path>
@@ -45,35 +45,21 @@
 		watch:
 			status: (newStatus)	->
 				if newStatus in ['success', 'error']
+					to = 0.01
+					to = 1 if newStatus is 'error'
 					anime(
 						targets: @$refs[@id]
 						opacity: 1
 						scale: [
-							{value: [0, 1], delay: 500}
-							{value: 0, delay: 3000, elasticity: 0}
+							{value: [0.01, 1], delay: 500, duration: 800}
+							{value: to, delay: 3000, elasticity: 0 , duration: 1000}
 						]
 						opacity: [
 							{value: [0.1,1]}
-							{value: 0.1, delay: 3100}
+							{value: to, delay: 4400}
 						]
 					)
 
-
-		methods:
-			aaa: ->
-				anime(
-					targets: @$refs[@id]
-					opacity: 1
-					scale: [
-						{value: [0.1, 1]}
-						{value: 0, delay: 3000, elasticity: 0}
-					]
-					opacity: [
-						{value: [0.1,1]}
-						{value: 0.1, delay: 3100}
-					]
-				)
-				return
 
 
 		computed:

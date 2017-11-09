@@ -10,7 +10,7 @@
 				LeftNavIconMenu(name="web-page-home" toName='dashboard' exact) Home
 				LeftNavIconMenu(name="earth-globe" toName='items') Items
 				LeftNavIconMenu(name="newspaper" toName='posts') Posts
-				LeftNavIconMenu(name="group" toName='login') Users
+				//- LeftNavIconMenu(name="group" toName='login') Users
 
 		nav#left-secondary(:class="{'left-secondary-opened': leftSecondaryOpened}")
 			#left-secondary-body
@@ -27,7 +27,7 @@
 				div
 				//- div(v-else)
 				UserTop
-				el-button(size="large" type="text" icon='el-icon-menu' @click="leftOpened = !leftOpened")
+				el-button.show_menu_small(size="large" type="text" icon='el-icon-menu' @click="leftOpened = !leftOpened")
 				//- BButton.bg-c-none.c-rock-l( icon="menu" size="large" @click="leftOpened = !leftOpened")
 					//- BButton.bg-c-green.c-white(type="round" @click="leftOpened = !leftOpened") leasf as fft
 					//- BButton.bg-c-blue.c-white(type="round" :loading="leftSecondaryOpened" @click="leftSecondaryOpened = !leftSecondaryOpened") left secondary

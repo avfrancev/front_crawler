@@ -3,7 +3,11 @@
 	avf-transition-group(name="list" tag='div' style="" class="grid"  @before-leave="beforeLeave" v-loading="loading")
 		.col-xlg-3.col-lg-4.col-md-6.col-sm-6.col-xs-6(v-for="(item, index) of items" :key="item.id" class="list-item")
 			Item(:item="item")
-		.col-xlg-3.col-lg-4.col-md-6.col-sm-6.col-xs-6.list-item(key="new" @click="$router.push({name:'item_new'})")
+		.col-xlg-3.col-lg-4.col-md-6.col-sm-6.col-xs-6.list-item(
+			key="new"
+			@click="$router.push({name:'item_new'})"
+			v-if="$auth.check()"
+			)
 			.new-item
 				.plus-icon
 </template>
@@ -22,9 +26,6 @@
 		data: ->
 			loading: 0
 			# items: []
-
-		computed:
-			items: -> @$store.state.items
 
 		methods:
 			beforeLeave: (el) ->
@@ -69,26 +70,29 @@
 			# 		mutation: removePosts
 			# 		variables: { id: id }
 
-		# apollo:
-		# 	items: ->
-		# 		query: items
-		# 		loadingKey: 'loading'
-		# 		variables:
-		# 			limit: 0
-		# 		fetchPolicy: 'cache-and-network'
-		# 		subscribeToMore: [{
-		# 			document: itemsSubscription
-		# 			updateQuery: (previousResult, { subscriptionData }) =>
-		# 				# console.log @
-		# 				data = subscriptionData.data.ItemChange
-		# 				if data.mutation is 'DELETED'
-		# 					console.log previousResult
-		# 					a = previousResult.items.filter (x) -> x.id isnt data.node.id
-		# 					console.log a
-		#
-		# 				# @$apollo.queries.items.refetch()
-		# 				return {items: a} || previousResult
-		# 		}]
+		apollo:
+			items: ->
+				query: items
+				loadingKey: 'loading'
+				variables:
+					limit: 0
+				fetchPolicy: 'cache-and-network'
+				subscribeToMore: [{
+					document: itemsSubscription
+					updateQuery: (previousResult, { subscriptionData }) =>
+						# console.log 'itemsSubscription', previousResult, subscriptionData
+						# console.log subscriptionData
+						data = subscriptionData.ItemChange
+						if data.mutation is 'DELETED'
+							return { items: previousResult.items.filter (x) -> x.id isnt data.node.id }
+						if data.mutation is 'CREATED'
+							new_items = [previousResult.items...]
+							new_items.unshift data.node
+							return { items: new_items }
+
+						# @$apollo.queries.items.refetch()
+						return previousResult
+				}]
 
 			# $subscribe:
 			# 	ItemChange:
@@ -99,20 +103,6 @@
 			# 			console.log data
 			# 			data
 			# 			# data.ItemChange
-
-		# mounted: ->
-		# 	postRemove = gql ["""
-		# 	 subscription postsSubscription {
-		# 		 PostRemove {
-		# 			 id
-		# 		 }
-		# 	 }
-		# 	 """]
-		# 	@$apollo.queries.items.subscribeToMore
-		# 		document: postRemove
-		# 		# updateQuery: (previousResult, { subscriptionData }) =>
-		# 		# 	@_apollo.queries.items.refetch()
-
 
 	}
 </script>
@@ -125,7 +115,6 @@
 	height: 100%
 	min-height: 300px
 	border-radius: 4px
-	background: #fff
 	transition: 0.3s
 	display: flex
 	flex-direction: column

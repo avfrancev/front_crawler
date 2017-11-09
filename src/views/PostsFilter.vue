@@ -2,6 +2,7 @@
 	div.posts_filter
 		div
 			el-input(v-model='state.postsFilters.searchQuery' placeholder="Search ..." prefix-icon="el-icon-search")
+				el-button(slot="append" icon="el-icon-close" @click="state.postsFilters.searchQuery = ''")
 		div(style="text-align: center")
 			//- span per page
 			//- br
@@ -26,6 +27,12 @@
 			el-select(v-model="state.postsFilters.published" clearable placeholder='Select publish state ...' popper-class='xxx-pop')
 				el-option(:value="true" label="Published")
 				el-option(:value="false" label="Unpublished")
+			//- el-slider(
+			//- 	style="padding: 0 18px"
+			//- 	v-model="dateFilter"
+			//- 	range
+			//- 	show-stops
+			//- )
 		//- el-button(@click="$store.commit('UPDATE_POSTSFILTERS', {payload: {limit: 10, filter: {}}})") change state
 		//- pre {{postsFilters}}
 </template>
@@ -42,6 +49,7 @@
 
 		data: ->
 			state: require('@/store/index.coffee').default
+			dateFilter: [1,7]
 
 		methods:
 			updateCounter: (field) -> @state.postsFilters.limit = field['editable']
@@ -67,7 +75,5 @@
 <style scoped media="screen" lang="stylus">
 	@import './../styles/vars.styl'
 	.posts_filter
-		--my-reusable-value: 20px
-		padding: var(--my-reusable-value)
 		color: $Extra_Light_Silver
 </style>

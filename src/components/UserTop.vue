@@ -53,6 +53,7 @@ export default {
 		.username
 			font-weight: bold
 		.avatar-image
+			cursor: pointer
 			border-radius: 50%
 			height: 40px
 			width: 40px

@@ -1,7 +1,7 @@
 window.onload = ->
 	didScroll = undefined
 	lastScrollTop = 0
-	delta = 55
+	delta = 15
 	view = document.querySelector('#router-view')
 	fakeTop = document.querySelector('#fakeTop')
 	navTop = document.querySelector('#top')
@@ -16,7 +16,7 @@ window.onload = ->
 			hasScrolled()
 			didScroll = false
 		return
-	), 250
+	), 1
 
 	hasScrolled = ->
 		st = view.scrollTop

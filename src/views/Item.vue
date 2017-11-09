@@ -34,6 +34,10 @@
 						el-input(type="text" v-model="item.link")
 					el-form-item(label="Logo")
 						el-input(type="text" v-model="item.logo")
+					el-form-item(label="Take screenshot")
+						el-switch(v-model='item.takeScreenshot')
+					el-form-item(label="Screenshot selector" v-if="item.takeScreenshot")
+						el-input(type="text" v-model="item.captureSelector")
 					//- el-form-item(label="Capture Selector")
 					//-   el-input.input(type="text" v-model="item.captureSelector")
 					//- el-form-item(label="Next parse date")
@@ -121,16 +125,19 @@
 					# update: (store, { data }) ->
 					#   console.log store,data
 				).then((data) =>
+					console.log data
+					# console.log data.updateItem
 					@$message
 						type: 'success'
 						message: "#{data.data.updateItem.full_name} successfuly updated"
-					# @$router.back()
+					@$router.back()
 					# console.log data
 				).catch (err) =>
+					console.log err
 					@$notify
 						duration: 30000
 						type: 'error'
-						message: err.graphQLErrors[0]?.message || err
+						message: err
 				return
 
 			delete_posts: ->

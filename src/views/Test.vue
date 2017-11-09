@@ -1,7 +1,12 @@
 <template lang="pug">
-	div asdasd
-		//- pre {{items}}
-		//- div(v-for="item in items")
+	div
+		el-button(@click="published = !published") {{published}}
+		el-button(@click="limit++") +
+		el-button(@click="limit--") -
+		avf-transition-group(class="posts" name="ooo")
+			.ooo-item(v-for="(post, idx) in posts" :key="post.id" :data-post-idx="idx")
+				h4 {{post.title}}
+				el-button(@click="togglePostPublish(post)") {{post.published}}
 		//- 	h3 {{item.name}} || {{item.depth}}
 		//- 	input(type="number" :value="item.depth" :data-item-id="item.id" @input="updateCounter")
 </template>
@@ -10,63 +15,84 @@
 
 <script lang="coffee">
 
-	import debounce from 'lodash/debounce.js'
-	# import _ from 'lodash'
-	# import {items, itemsSubscription, updateItem, removePost, removePosts} from '@/schemas.coffee'
-	import Counter from '@/components/Counter'
-	# import gql from 'graphql-tag'
+	import {posts, postsSubscription, removePost, updatePost} from '@/schemas.coffee'
 
 	export default {
-		components:
-			Counter: Counter
-			# LogoProgress: require '@/components/LogoProgress'
-		# data: ->
-		# 	# items: [0,1,2,3,4,5,6,7,8,9]
-		# 	items: []
-		# computed:
-			# items: -> @$store.state.items
 
-		# created: ->
-		# 	@$store.dispatch 'getItems'
+	data: ->
+		postz: [1,2,3,4,5,6,7,8,9]
+		limit: 5
+		published: false
 
-		# methods:
-		# 	updateCounter: ({target}) ->
-		# 		@$store.dispatch 'updateItem', { id: target.dataset.itemId, depth: target.value }
+	methods:
+		add: -> @postz.push @postz.length+1
+		del: -> @postz.splice 2,1
+		togglePostPublish: (post) ->
+			@$apollo.mutate
+				mutation: updatePost
+				variables: {id: post.id, published: !post.published}
 
-			# updateCounter: debounce (e) ->
-			# 	console.log(e)
-			# 	# @$store.dispatch 'updateItem', field
-			# , 1000
+	apollo:
+		posts:
+			query: posts
+			# fetchPolicy: 'network-only'
+			fetchPolicy: 'cache-and-network'
+			loadingKey: 'loading'
+			variables: ->
+				limit: @limit
+				filter:
+					published: @published
+			subscribeToMore: [{
+				document: postsSubscription
+				updateQuery: (previousResult, { subscriptionData }) =>
+					data = subscriptionData.PostChange
+					if data.mutation is 'DELETED'
+						return { posts: previousResult.posts.filter (x) -> x.id isnt data.node.id }
+					if data.mutation is 'CREATED'
+						new_posts = [previousResult.posts...]
+						new_posts.unshift data.node
+						return { posts: new_posts }
 
-
+					return previousResult
+			}]
 
 	}
 </script>
 
 <style media="screen" scoped lang="stylus">
 
-.xxx-item
-	transition: all 400ms
+@import './../styles/vars.styl'
+
+.posts
 	display: block
+	// grid-gap: 10px
+	// grid-template-columns: 1fr 1fr 1fr 1fr
+	// position: relative
+	// transition: 1s
+	// +md()
+	// 	grid-gap: 2px
+	// 	grid-template-columns: 1fr 1fr 1fr
+	//
+	// .post
+	// 	transition: 1s
+	// 	padding: 10px
+	// 	background: #eee
+
+.ooo-item
+	transition: all 2400ms
 	opacity: 1
-	width 100%
-	heigh: 40px
-	padding: 10px
-	background: #eee
-	margin-bottom: 1px
-	// width 100%
-	// margin-right: 10px;
+	// position: absolute
+	// width: 50px
 
-.xxx-enter, .xxx-leave-to
-	opacity: 0.1
-	transform: scaleY(0.2)
-	// transform: translateX(30px)
+// .ooo-enter-active
+// 	transition-delay: .2s
 
-.xxx-leave-active
-	position: absolute
+.ooo-enter, .ooo-leave-to
+	opacity: 0.01
+	// transform: scaleY(0.2)
+	transform: translate3d(20px, 0, 0)
 
-// .xxx-move
-// 	transition: transform 1.2s
-
+// .ooo-leave-active
+// 	position: absolute
 
 </style>
